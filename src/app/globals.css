@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+/* Tablet/desktop windows too short for the hero at its normal size (640px or less, e.g. split
+   screen): the hero tightens so its copy and buttons always fit one screen. */
+@custom-variant short (@media (min-width: 48rem) and (max-height: 40rem));
+/* Phones in landscape and very small phones: same idea for the phone layout. */
+@custom-variant short-phone (@media (max-width: 47.99rem) and (max-height: 30rem));
+
+/* ==========================================================================
+   GFX-T design tokens
+   Derived from the logo: ink #181818, signal yellow #FFBF01.
+   Rule: yellow means "selected" — the active path, focus, current page, next action.
+   Never yellow text on paper (fails contrast); on light surfaces yellow is a fill.
+   ========================================================================== */
+
+@theme {
+  /* Color */
+  --color-ink-950: #0b0b0b;
+  --color-ink-900: #181818;
+  --color-ink-850: #1f1f1f;
+  --color-ink-800: #262626;
+  --color-ink-700: #3a3a3a;
+  --color-ink-500: #828280; /* lightest grey allowed for small text on ink (≥4.5:1) */
+  --color-ink-400: #8f8f8c;
+  --color-ink-300: #b4b1aa;
+  --color-paper: #f3f0e8;
+  --color-paper-dim: #e4e0d5;
+  --color-signal: #ffbf01;
+  --color-signal-deep: #e0a800;
+
+  /* Fluid type scale — 360px → 1680px viewports */
+  --text-label: 0.75rem;
+  --text-label--letter-spacing: 0.14em;
+  --text-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --text-body--line-height: 1.6;
+  --text-lead: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
+  --text-lead--line-height: 1.45;
+  --text-h3: clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem);
+  --text-h3--line-height: 1.05;
+  --text-h2: clamp(2.6rem, 1.5rem + 4.4vw, 6.75rem);
+  --text-h2--line-height: 0.95;
+  --text-display: clamp(2.6rem, 0.6rem + 8.4vw, 11.5rem);
+  --text-display--line-height: 0.86;
+
+  /* Spacing rhythm */
+  --spacing-gutter: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+  --spacing-section: clamp(6rem, 4rem + 8vw, 14rem);
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --default-transition-duration: 450ms;
+  --default-transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --breakpoint-3xl: 1920px;
+}
+
+/* Font families resolve to next/font variables set on <html> (layout.tsx). */
+@theme inline {
+  --font-display: var(--font-archivo), "Arial Narrow", system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+:root {
+  --duration-fast: 200ms;
+  --duration-base: 450ms;
+  --duration-slow: 800ms;
+  --duration-scene: 1200ms;
+
+  /* The site's single diagonal: the slash on the logo's X. */
+  --slash-angle: 34deg;
+
+  --z-canvas: 0;
+  --z-content: 10;
+  --z-header: 50;
+  --z-menu: 60;
+  --z-transition: 80;
+  --z-cursor: 90;
+
+  --header-h: 4.5rem;
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  background: var(--color-ink-950);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink-950);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-ink-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+/* Custom cursor hides the native one only while it is active (fine pointers). */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+@utility font-display-wide {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 125;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+}
+
+/* Echoes the wordmark: extended, heavy, slanted. For short display lines only. */
+@utility font-logo {
+  font-family: var(--font-archivo-italic), var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+  max-width: 1760px;
+}
+
+/* Masked line used by text reveals. */
+@utility reveal-mask {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+/* ==========================================================================
+   Increased contrast (OS setting): lift secondary greys and hairlines.
+   ========================================================================== */
+@media (prefers-contrast: more) {
+  :root {
+    --color-ink-400: #c9c6bf;
+    --color-ink-500: #b4b1aa;
+    --color-ink-700: #6b6b6b;
+    --color-ink-800: #555555;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion: keep everything, remove movement.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Marquee (client names). Pure CSS so it costs nothing on the main thread.
+   ========================================================================== */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Hero supporting copy (meta tags, tagline, actions) rises in after the headline. Pure CSS so it
+   runs from the first paint: it never flashes out when JS hydrates, and — being opacity only,
+   never visibility — the buttons stay clickable the whole time. Timing matches the old GSAP
+   intro: 0.7s in, 0.06s apart, 0.8s long. */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@utility hero-fade {
+  animation: hero-fade 0.8s var(--ease-out-expo) both;
+  animation-delay: var(--hero-fade-delay, 0.7s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade {
+    animation: none !important;
+  }
+}
+
+/* Page-intro scroll cue: a short signal stroke travelling along a hairline. */
+@keyframes scroll-cue {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Vision & Mission: a signal pulse travelling the mission path (x 40 → 360 in the diagram). */
+@keyframes path-pulse {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(320px);
+    opacity: 0;
+  }
+}
+
+/* Scroll reveal (see ScrollReveal.tsx): subtle fade-up on tablet/desktop, enabled only once JS
+   is running. Phones get the rotating objects (MobileShapes) instead. */
+@media (min-width: 768px) {
+  .reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.8s var(--ease-out-expo);
+  }
+  .reveal-ready [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Mobile rotating objects (MobileShapes.tsx). */
+@keyframes shape-tumble {
+  to {
+    transform: rotateX(360deg) rotateY(720deg);
+  }
+}
+@keyframes shape-flip {
+  to {
+    transform: rotateX(360deg) rotateZ(180deg);
+  }
+}
+@keyframes shape-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shape-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 6px -14px;
+  }
+}
