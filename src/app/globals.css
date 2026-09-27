@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Tablet/desktop windows that are short (laptops at 125% scaling, split screen, browser bars):
+   the hero tightens so its copy and buttons always fit one screen. */
+@custom-variant short (@media (min-width: 48rem) and (max-height: 47.5rem));
+/* Phones in landscape and very small phones: same idea for the phone layout. */
+@custom-variant short-phone (@media (max-width: 47.99rem) and (max-height: 30rem));
+
 /* ==========================================================================
    GFX-T design tokens
    Derived from the logo: ink #181818, signal yellow #FFBF01.
@@ -215,6 +221,26 @@ html.lenis body {
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Hero supporting copy (meta tags, tagline, actions) rises in after the headline. Pure CSS so it
+   runs from the first paint: it never flashes out when JS hydrates, and — being opacity only,
+   never visibility — the buttons stay clickable the whole time. Timing matches the old GSAP
+   intro: 0.7s in, 0.06s apart, 0.8s long. */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@utility hero-fade {
+  animation: hero-fade 0.8s var(--ease-out-expo) both;
+  animation-delay: var(--hero-fade-delay, 0.7s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade {
     animation: none !important;
   }
 }

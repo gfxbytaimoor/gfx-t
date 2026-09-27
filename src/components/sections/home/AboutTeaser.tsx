@@ -20,7 +20,7 @@ import { YearMark } from "@/components/typography/YearMark";
  */
 export function AboutTeaser() {
   return (
-    <section aria-labelledby="about-teaser-heading" className="relative isolate bg-ink-950 py-[var(--spacing-section)]">
+    <section aria-labelledby="about-teaser-heading" className="relative isolate bg-ink-950 py-[calc(var(--spacing-section)*0.5)]">
       <MobileShapes variant={1} />
       <div className="container-page">
         <SectionLabel index="02">About GFX-T</SectionLabel>

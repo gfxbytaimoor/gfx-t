@@ -192,7 +192,7 @@ export function VisionMission({ index }: Props) {
   ];
 
   return (
-    <section ref={ref} aria-label="Vision and Mission" className="relative isolate bg-ink-900 pb-[var(--spacing-section)] pt-[calc(var(--spacing-section)*0.45)]">
+    <section ref={ref} aria-label="Vision and Mission" className="relative isolate bg-ink-900 pb-[var(--spacing-section)] pt-[calc(var(--spacing-section)*0.3)]">
       <MobileShapes variant={2} />
       <div className="container-page">
         <SectionLabel index={index}>Vision &amp; Mission</SectionLabel>

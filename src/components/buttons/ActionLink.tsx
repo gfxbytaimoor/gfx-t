@@ -12,7 +12,8 @@ type Props = {
   variant?: "primary" | "ghost";
   /** The surface the control sits on. */
   tone?: "ink" | "paper";
-  size?: "sm" | "md" | "lg";
+  /** "sm-md": small on phones, medium from `md` up — decided in CSS, so there is no jump on load. */
+  size?: "sm" | "md" | "lg" | "sm-md";
   /** Let a long label break onto two lines on phones and tablets (single line from `lg` up). */
   wrap?: boolean;
   className?: string;
@@ -51,7 +52,9 @@ export function ActionLink({ href, children, variant = "ghost", tone = "ink", si
       ? cn("gap-4 pl-7 pr-2", wrap ? "min-h-14 lg:h-14" : "h-14")
       : size === "sm"
         ? cn("gap-3 pl-4 pr-1", wrap ? "min-h-11 lg:h-11" : "h-11")
-        : cn("gap-4 pl-5 pr-1.5", wrap ? "min-h-12 lg:h-12" : "h-12"),
+        : size === "sm-md"
+          ? cn("gap-3 pl-4 pr-1 md:gap-4 md:pl-5 md:pr-1.5", wrap ? "min-h-11 md:min-h-12 lg:h-12" : "h-11 md:h-12")
+          : cn("gap-4 pl-5 pr-1.5", wrap ? "min-h-12 lg:h-12" : "h-12"),
     skin.base,
     skin.hoverText,
     className,
@@ -81,7 +84,7 @@ export function ActionLink({ href, children, variant = "ghost", tone = "ink", si
         aria-hidden
         className={cn(
           "grid shrink-0 place-items-center transition-colors duration-500",
-          size === "lg" ? "size-10" : size === "sm" ? "size-8" : "size-9",
+          size === "lg" ? "size-10" : size === "sm" ? "size-8" : size === "sm-md" ? "size-8 md:size-9" : "size-9",
           skin.chip,
         )}
       >

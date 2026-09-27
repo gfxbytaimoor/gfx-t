@@ -66,22 +66,17 @@ export function Hero() {
     { scope: sectionRef, dependencies: [reduced], revertOnUpdate: true },
   );
 
-  // Load-in choreography: headline lines rise from their masks, then supporting copy.
+  // Load-in choreography: headline lines rise from their masks. The supporting copy and buttons
+  // follow via the CSS `hero-fade` utility (globals.css), so they are never hidden after they have
+  // painted and the buttons can be clicked from the first frame.
   useGSAP(
     () => {
       if (reduced) return;
-      gsap
-        .timeline({ delay: 0.15 })
-        .from("[data-hero-line]", {
-          yPercent: 108,
-          duration: motion.duration.scene,
-          stagger: motion.stagger.lines * 1.5,
-        })
-        .from(
-          "[data-hero-fade]",
-          { autoAlpha: 0, y: 16, duration: motion.duration.slow, stagger: motion.stagger.items },
-          0.55,
-        );
+      gsap.timeline({ delay: 0.15 }).from("[data-hero-line]", {
+        yPercent: 108,
+        duration: motion.duration.scene,
+        stagger: motion.stagger.lines * 1.5,
+      });
     },
     { scope: sectionRef, dependencies: [reduced], revertOnUpdate: true },
   );
@@ -149,8 +144,8 @@ export function Hero() {
         />
 
         {/* Order: meta → headline → tagline + actions → beat bar. The form fills the space low-right. */}
-        <div className="container-page relative flex h-full flex-col justify-center pb-10 pt-[var(--header-h)] md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))]">
-          <ul data-hero-fade aria-label="About GFX-T" className="label flex flex-wrap items-center gap-2">
+        <div className="container-page relative flex h-full flex-col justify-center-safe pb-10 pt-[var(--header-h)] short-phone:pb-4 md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4 short:pt-[calc(var(--header-h)+clamp(0.5rem,2svh,1.5rem))]">
+          <ul aria-label="About GFX-T" className="hero-fade label flex flex-wrap items-center gap-2">
             <li className="flex items-center gap-2 bg-signal px-3 py-1.5 font-medium text-ink-950">
               <span aria-hidden className="size-1.5 bg-ink-950" />
               {site.descriptor}
@@ -165,7 +160,7 @@ export function Hero() {
             id="hero-heading"
             // Sized by width AND height so all three lines always fit the stage. On phones the width
             // term divides the space inside the gutters by the widest line ("We Strategize." ≈ 8.51em).
-            className="mt-5 whitespace-nowrap font-display text-[length:min(calc((100vw_-_2*var(--spacing-gutter))/8.7),8.6svh)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] md:mt-7 md:text-[min(7.2vw,12.5svh)]"
+            className="mt-5 whitespace-nowrap font-display text-[length:min(calc((100vw_-_2*var(--spacing-gutter))/8.7),8.6svh)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] md:mt-7 md:text-[min(7.2vw,12.5svh)] short:mt-4 short:text-[min(7.2vw,10svh)] short-phone:mt-3"
             onPointerLeave={() => setHovered(null)}
           >
             {site.heroHeading.map((line, i) => {
@@ -193,16 +188,18 @@ export function Hero() {
           </h1>
 
           {/* Tagline first, actions always underneath it (every screen size). */}
-          <div className="mt-6 flex flex-col gap-5 md:mt-9 md:gap-6">
-            <p data-hero-fade className="max-w-md text-base text-paper/85 md:text-lead">
+          <div className="mt-6 flex flex-col gap-5 md:mt-9 md:gap-6 short:mt-5 short:gap-4 short-phone:mt-4 short-phone:gap-3">
+            <p className="hero-fade max-w-md text-base text-paper/85 [--hero-fade-delay:0.76s] md:text-lead short:max-w-xl short:text-base short-phone:max-w-xl">
               {site.tagline}
             </p>
-            <div data-hero-fade className="flex flex-wrap gap-2 md:gap-3">
-              <ActionLink href="/contact" variant="primary" size={mobile ? "sm" : "md"}>
+            <div className="hero-fade flex flex-wrap gap-2 [--hero-fade-delay:0.82s] md:gap-3">
+              {/* Size and label switch in CSS (not JS) so the buttons don't jump when the page loads. */}
+              <ActionLink href="/contact" variant="primary" size="sm-md">
                 Start a project
               </ActionLink>
-              <ActionLink href="/services" size={mobile ? "sm" : "md"}>
-                {mobile ? "Services" : "Our services"}
+              <ActionLink href="/services" size="sm-md">
+                <span className="md:hidden">Services</span>
+                <span className="hidden md:inline">Our services</span>
               </ActionLink>
             </div>
           </div>
