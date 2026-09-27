@@ -144,7 +144,7 @@ export function Hero() {
         />
 
         {/* Order: meta → headline → tagline + actions → beat bar. The form fills the space low-right. */}
-        <div className="container-page relative flex h-full flex-col justify-center-safe pb-10 pt-[var(--header-h)] short-phone:pb-4 md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4 short:pt-[calc(var(--header-h)+clamp(0.5rem,2svh,1.5rem))]">
+        <div className="container-page relative flex h-full flex-col justify-center-safe pb-10 pt-[var(--header-h)] short-phone:pb-4 md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4">
           <ul aria-label="About GFX-T" className="hero-fade label flex flex-wrap items-center gap-2">
             <li className="flex items-center gap-2 bg-signal px-3 py-1.5 font-medium text-ink-950">
               <span aria-hidden className="size-1.5 bg-ink-950" />
@@ -205,7 +205,8 @@ export function Hero() {
           </div>
 
           {/* Desktop: the form fills the free space. Phones: no canvas — the copy sits centred. */}
-          {!mobile && <div aria-hidden className="flex-1" />}
+          {/* CSS, not the JS media check: rendered on the server too, so phones don't jump on load. */}
+          <div aria-hidden className="hidden flex-1 md:block" />
         </div>
       </div>
     </section>
