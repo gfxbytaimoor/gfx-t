@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers deploy (`npx wrangler deploy`): upload the static export in out/ as-is.
+  // The site is fully static (`output: "export"`), so there is no Worker script — just assets.
+  // Having this file also stops Wrangler from auto-converting the project to OpenNext.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gfx-t",
+  "compatibility_date": "2026-09-26",
+  "assets": {
+    "directory": "./out",
+    // Unknown paths get out/404.html with a real 404 status. /about serves about.html
+    // (html_handling "auto-trailing-slash" is the default).
+    "not_found_handling": "404-page"
+  }
+}

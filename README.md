@@ -20,6 +20,7 @@ The site is a static export (`output: "export"`): `npm run build` writes plain f
 
 - **Build command:** `npm run build` · **Build output directory:** `out` · **Production branch:** `main`
 - Node version comes from `.node-version` (22). No environment variables are required.
+- **Cloudflare Workers instead of Pages** (deploy command `npx wrangler deploy`): `wrangler.jsonc` uploads `out/` as static assets. Keep that file — without it Wrangler tries to convert the project to OpenNext, which fails on a static export.
 
 Every push to `main` redeploys. To serve the apex `gfx-t.com`, the domain must be a zone on the same Cloudflare account (move the nameservers from Hostinger); then add `gfx-t.com` and `www.gfx-t.com` under the project's Custom domains and redirect www to the apex. Copy the mail records (MX, SPF, DKIM, DMARC) into Cloudflare DNS before switching nameservers.
 
