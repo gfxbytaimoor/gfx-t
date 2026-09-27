@@ -192,7 +192,8 @@ export function Hero() {
             })}
           </h1>
 
-          <div className="mt-6 flex flex-col gap-5 md:mt-9 md:gap-6 2xl:flex-row 2xl:items-end 2xl:gap-10">
+          {/* Tagline first, actions always underneath it (every screen size). */}
+          <div className="mt-6 flex flex-col gap-5 md:mt-9 md:gap-6">
             <p data-hero-fade className="max-w-md text-base text-paper/85 md:text-lead">
               {site.tagline}
             </p>
