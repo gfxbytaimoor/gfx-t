@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/image-variants.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/image-variants.mjs",
     "build": "next build",
-    "start": "next start",
+    "postbuild": "node scripts/fix-export-segments.mjs && node scripts/image-variants.mjs --verify",
+    "start": "node scripts/serve-out.mjs",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "images": "node scripts/optimize-images.mjs"

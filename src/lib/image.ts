@@ -4,8 +4,8 @@
  * - Small sources (logos, the preview crops from the company profile) are served as-is: resizing
  *   and re-encoding a ~300px file only adds blur and compression artefacts, and it is already
  *   smaller than any variant the optimizer could produce.
- * - Everything else is optimised at quality 90 (must be listed in `images.qualities` in
- *   next.config.ts). The default 75 visibly softens type and fine lines in design work.
+ * - Everything else goes through the pre-built responsive variants (scripts/image-variants.mjs,
+ *   quality 90 — the default 75 visibly softens type and fine lines in design work).
  */
 export const SMALL_SOURCE_MAX = 700;
 

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # client originals (optimised copies live in public/)
 /assets-src
+
+# responsive image variants, generated before dev/build (scripts/image-variants.mjs)
+/public/_img

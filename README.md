@@ -5,13 +5,25 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · GSAP (Scr
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm run build      # production build (all routes are static)
+npm run build      # static site in out/ (what Cloudflare Pages serves)
+npm start          # preview out/ locally, resolved the way Pages does
 npm run lint
 npm run typecheck
 npm run images     # optimise client-supplied images (see below)
 ```
 
 The production domain is `https://gfx-t.com` (set in `src/lib/site.ts`); it drives canonical URLs, the sitemap, robots.txt and Open Graph tags. Set `NEXT_PUBLIC_SITE_URL` only to override it (e.g. a staging deploy). Redirect `www.gfx-t.com` to `gfx-t.com` at the host so there is one canonical address.
+
+## Deploying (Cloudflare Pages, free plan)
+
+The site is a static export (`output: "export"`): `npm run build` writes plain files to `out/`, no server needed. In Cloudflare Pages → Create → Connect to Git → this repo:
+
+- **Build command:** `npm run build` · **Build output directory:** `out` · **Production branch:** `main`
+- Node version comes from `.node-version` (22). No environment variables are required.
+
+Every push to `main` redeploys. To serve the apex `gfx-t.com`, the domain must be a zone on the same Cloudflare account (move the nameservers from Hostinger); then add `gfx-t.com` and `www.gfx-t.com` under the project's Custom domains and redirect www to the apex. Copy the mail records (MX, SPF, DKIM, DMARC) into Cloudflare DNS before switching nameservers.
+
+**Images.** A static host has no image-optimisation server, so `scripts/image-variants.mjs` pre-builds every image in `public/brand`, `public/team` and `public/portfolio` at each width in `scripts/image-widths.json` (quality 90 WebP, into git-ignored `public/_img`), and `src/lib/image-loader.ts` points `next/image` at them. It runs automatically before `dev` and `build`, and after the build it fails the build if any referenced image is missing. `scripts/fix-export-segments.mjs` corrects a Windows-only Next.js export bug in prefetch file names (a no-op on Linux, including Cloudflare's build).
 
 ## Creative system
 
