@@ -4,45 +4,47 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { portfolio, portfolioCategories, portfolioNote, type PortfolioCategory, type PortfolioProject } from "@/data/portfolio";
 import { mailto } from "@/lib/site";
+import { artworkImageProps } from "@/lib/image";
 import { Flip, gsap, motion, useGSAP, registerGsap } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/device";
 import { FilterChips, type FilterOption } from "@/components/ui/FilterChips";
 import { ActionLink } from "@/components/buttons/ActionLink";
-import { SelectionBox } from "@/components/ui/SelectionBox";
 import { ExhibitionPending } from "./ExhibitionPending";
-import { ProjectViewer } from "./ProjectViewer";
 
 registerGsap();
 
 type Filter = PortfolioCategory | "all";
 
 /**
- * PORTFOLIO — an exhibition wall. Pieces hang in a tight grid sized close to their native
- * resolution (the current files are preview crops), re-flow with FLIP when filtered, and open
- * in the full-screen viewer. With no data it renders the pending exhibition instead.
+ * PORTFOLIO — an exhibition wall. Pieces hang in a masonry of columns at their own proportions,
+ * so every piece is shown whole (posters, standees and billboards alike), and re-flow with FLIP
+ * when filtered. The wall is for looking only: pieces are not links and do not open a viewer.
+ * With no data it renders the pending exhibition instead.
  */
 export function PortfolioExhibition({ projects = portfolio }: { projects?: PortfolioProject[] }) {
   const [filter, setFilter] = useState<Filter>("all");
-  const [open, setOpen] = useState<number | null>(null);
   const reduced = useReducedMotion();
-  const gridRef = useRef<HTMLOListElement>(null);
+  const wallRef = useRef<HTMLDivElement>(null);
   const flipState = useRef<Flip.FlipState>(null);
 
   const visible = filter === "all" ? projects : projects.filter((p) => p.category === filter);
+  const isVisible = (p: PortfolioProject) => visible.includes(p);
+  const works = projects.filter((p) => p.category !== "branding");
+  const identities = projects.filter((p) => p.category === "branding");
 
   const choose = (next: Filter) => {
     if (next === filter) return;
-    if (!reduced && gridRef.current) flipState.current = Flip.getState(gridRef.current.children);
+    if (!reduced && wallRef.current) flipState.current = Flip.getState(wallRef.current.querySelectorAll("li"));
     setFilter(next);
   };
 
   useGSAP(
     () => {
       const state = flipState.current;
-      if (!state || !gridRef.current) return;
+      if (!state || !wallRef.current) return;
       flipState.current = null;
       Flip.from(state, {
-        targets: gridRef.current.children,
+        targets: wallRef.current.querySelectorAll("li"),
         duration: motion.duration.slow,
         ease: motion.ease.inOut,
         absolute: true,
@@ -73,16 +75,24 @@ export function PortfolioExhibition({ projects = portfolio }: { projects?: Portf
         </p>
       </div>
 
-      <ol ref={gridRef} className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
-        {projects.map((p, i) => {
-          const shown = visible.includes(p);
-          return (
-            <li key={p.slug} data-flip-id={p.slug} hidden={!shown}>
-              <PieceTile project={p} number={i + 1} onOpen={() => setOpen(visible.indexOf(p))} />
+      <div ref={wallRef} className="relative mt-10">
+        {/* Posts and campaigns: a masonry of columns, each piece at its own proportions. */}
+        <ol hidden={!works.some(isVisible)} className="columns-2 gap-3 md:columns-3 md:gap-5 xl:columns-4">
+          {works.map((p) => (
+            <li key={p.slug} data-flip-id={p.slug} hidden={!isVisible(p)} className="mb-6 break-inside-avoid md:mb-8">
+              <PieceTile project={p} number={projects.indexOf(p) + 1} />
             </li>
-          );
-        })}
-      </ol>
+          ))}
+        </ol>
+        {/* Brand identities are all square cards, so they sit in an even grid of their own. */}
+        <ol hidden={!identities.some(isVisible)} className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-x-5 md:gap-y-8 xl:grid-cols-5">
+          {identities.map((p) => (
+            <li key={p.slug} data-flip-id={p.slug} hidden={!isVisible(p)}>
+              <PieceTile project={p} number={projects.indexOf(p) + 1} />
+            </li>
+          ))}
+        </ol>
+      </div>
 
       <div className="mt-12 flex flex-col gap-6 border border-ink-800 bg-ink-900 p-6 md:flex-row md:items-center md:justify-between md:p-8">
         <p className="max-w-md text-paper/80">{portfolioNote}</p>
@@ -90,44 +100,53 @@ export function PortfolioExhibition({ projects = portfolio }: { projects?: Portf
           Request the complete portfolio
         </ActionLink>
       </div>
-
-      <ProjectViewer projects={visible} index={open} onChange={setOpen} />
     </div>
   );
 }
 
-function PieceTile({ project, number, onOpen }: { project: PortfolioProject; number: number; onOpen: () => void }) {
+const TILE_SIZES = "(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw";
+
+// Eager for every piece: in a column layout the tiles at the top of each column are not the first
+// ones in the list, and the whole wall is light (small originals + optimised variants).
+function PieceTile({ project, number }: { project: PortfolioProject; number: number }) {
   const { cover } = project;
-  const category = portfolioCategories.find((c) => c.id === project.category)?.label;
   const identity = project.category === "branding";
+  const loading = "eager";
   return (
-    <button type="button" onClick={onOpen} data-cursor="view" className="group relative block w-full text-left">
-      <span className={identity ? "relative block aspect-square overflow-hidden bg-white" : "relative block aspect-square overflow-hidden bg-ink-850"}>
+    <figure>
+      {identity ? (
+        // Logos sit on a white card so each mark reads as it was designed.
+        <span className="relative block aspect-square overflow-hidden bg-white">
+          <Image
+            src={cover.src}
+            alt={cover.alt}
+            fill
+            sizes={TILE_SIZES}
+            loading={loading}
+            {...artworkImageProps(cover.width)}
+            className="object-contain p-[10%]"
+          />
+        </span>
+      ) : (
+        // Shown whole, at the piece's own proportions.
         <Image
           src={cover.src}
           alt={cover.alt}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          className={
-            identity
-              ? "object-contain p-[8%] transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
-              : "object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
-          }
+          width={cover.width}
+          height={cover.height}
+          sizes={TILE_SIZES}
+          loading={loading}
+          {...artworkImageProps(cover.width)}
+          className="block h-auto w-full bg-ink-850"
         />
-      </span>
-      <SelectionBox visible={false} className="inset-0 group-hover:opacity-100 group-focus-visible:opacity-100" />
-      <span className="mt-3 flex items-baseline justify-between gap-3">
+      )}
+      <figcaption className="mt-3 flex items-start justify-between gap-3">
         <span className="min-w-0">
-          <span className="block truncate text-sm font-semibold text-paper transition-colors group-hover:text-signal">
-            {project.clientName ?? project.title}
-          </span>
-          {/* Second line only when it adds something: a named client's work type, or "brand identity". */}
-          {(project.clientName || identity) && (
-            <span className="label mt-0.5 block text-ink-400">{identity ? "Brand identity" : category}</span>
-          )}
+          <span className="block text-sm font-semibold text-paper">{project.title}</span>
+          <span className="label mt-1 block leading-snug text-ink-400">{project.detail}</span>
         </span>
-        <span className="label text-ink-400">{String(number).padStart(2, "0")}</span>
-      </span>
-    </button>
+        <span className="label shrink-0 text-ink-400">{String(number).padStart(2, "0")}</span>
+      </figcaption>
+    </figure>
   );
 }

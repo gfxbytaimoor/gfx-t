@@ -13,9 +13,18 @@ import { ScrollReveal } from "@/components/providers/ScrollReveal";
 const archivo = Archivo({
   subsets: ["latin"],
   axes: ["wdth"],
-  style: ["normal", "italic"],
   variable: "--font-archivo",
   display: "swap",
+});
+// The italic only sets the "Why choose us" headline (`font-logo`) on the home page, so it is a
+// separate face that is not preloaded — every other page would download it for nothing.
+const archivoItalic = Archivo({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  style: "italic",
+  variable: "--font-archivo-italic",
+  display: "swap",
+  preload: false,
 });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrains = JetBrains_Mono({
@@ -84,7 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // suppressHydrationWarning: browser extensions (Grammarly, ColorZilla, password managers…)
     // add attributes to <html>/<body> before React loads. This ignores attribute differences on
     // these two elements only; mismatches anywhere inside the page are still reported.
-    <html lang="en" className={`${archivo.variable} ${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${archivo.variable} ${archivoItalic.variable} ${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <script
           type="application/ld+json"

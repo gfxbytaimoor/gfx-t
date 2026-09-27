@@ -15,6 +15,8 @@ export default async function OpenGraphImage() {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 72, background: "#0b0b0b", color: "#f3f0e8" }}>
+        {/* ImageResponse renders plain <img> only; next/image does not work here. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={logoSrc} width={330} height={85} alt="" />
         <div style={{ display: "flex", flexDirection: "column", fontSize: 84, fontWeight: 700, lineHeight: 0.95, letterSpacing: -2 }}>
           <span style={{ color: "#6b6b6b" }}>WE CREATE.</span>

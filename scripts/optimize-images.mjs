@@ -62,7 +62,8 @@ for await (const file of walk(SRC)) {
   const info = await sharp(file)
     .rotate()
     .resize({ width: MAX_WIDTH[kind], withoutEnlargement: true })
-    .webp({ quality: kind === "clients" ? 90 : 82, alphaQuality: 100 })
+    // High quality + full-resolution colour: edges of type and logos in design work stay crisp.
+    .webp({ quality: kind === "clients" ? 90 : 92, alphaQuality: 100, smartSubsample: true })
     .toFile(target);
   console.log(`wrote   /${relative(OUT, target).replaceAll("\\", "/")}  { width: ${info.width}, height: ${info.height} }`);
 }

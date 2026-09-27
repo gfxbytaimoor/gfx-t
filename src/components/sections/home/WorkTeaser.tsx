@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { MobileShapes } from "@/components/ui/MobileShapes";
 import { useRef } from "react";
-import { portfolio, portfolioIntro } from "@/data/portfolio";
+import { portfolio, portfolioIntro, type PortfolioProject } from "@/data/portfolio";
+import { artworkImageProps, SMALL_SOURCE_MAX } from "@/lib/image";
 import { gsap, useGSAP, registerGsap } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/device";
 import { ActionLink } from "@/components/buttons/ActionLink";
@@ -17,6 +18,18 @@ const COLUMNS = 4;
 /** Relative drift per column while the section crosses the viewport (percent of its height). */
 const DRIFT = [-8, 6, -12, 4];
 
+/** Tiles are square crops: sharp, roughly square posts first (little is cropped, nothing upscaled). */
+const sharpFirst = (p: PortfolioProject) => {
+  const { width, height } = p.cover;
+  return width >= SMALL_SOURCE_MAX && width / height > 0.75 && width / height < 1.4 ? 0 : 1;
+};
+const TEASER_PIECES = portfolio
+  .filter((p) => p.category === "social")
+  .map((p, i) => ({ p, i }))
+  .sort((a, b) => sharpFirst(a.p) - sharpFirst(b.p) || a.i - b.i)
+  .slice(0, 12)
+  .map(({ p }) => p);
+
 /**
  * SELECTED WORK — the proof chapter. Real posts from the portfolio hang in four columns that
  * drift at different speeds as the section scrolls past. Renders nothing until work exists.
@@ -24,7 +37,7 @@ const DRIFT = [-8, 6, -12, 4];
 export function WorkTeaser() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const pieces = portfolio.filter((p) => p.category === "social").slice(0, 12);
+  const pieces = TEASER_PIECES;
 
   useGSAP(
     () => {
@@ -75,7 +88,7 @@ export function WorkTeaser() {
                 key={p.slug}
                 href="/portfolio"
                 data-cursor="view"
-                aria-label={`${p.title} — view in portfolio`}
+                aria-label={`${p.title}, ${p.detail} — view in portfolio`}
                 className="group relative block aspect-square overflow-hidden bg-ink-850"
               >
                 <Image
@@ -83,6 +96,7 @@ export function WorkTeaser() {
                   alt={p.cover.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, 22vw"
+                  {...artworkImageProps(p.cover.width)}
                   className="object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
                 />
               </TransitionLink>

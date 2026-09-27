@@ -35,7 +35,7 @@ export function Leadership({ index, compact, className }: { index: string; compa
             <li key={l.slug}>
               <div className="relative overflow-hidden border border-ink-800 bg-ink-900">
                 <span className="relative block aspect-[4/5] overflow-hidden">
-                  <Image src={l.portrait.src} alt={l.portrait.alt} fill sizes="(max-width: 640px) 100vw, 440px" className="object-cover object-top" />
+                  <Image src={l.portrait.src} alt={l.portrait.alt} fill sizes="(max-width: 640px) 100vw, 440px" quality={90} className="object-cover object-top" />
                   <span aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-950/90 to-transparent" />
                   <span className="label absolute left-4 top-4 bg-signal px-2.5 py-1.5 font-medium text-ink-950">{l.role}</span>
                 </span>

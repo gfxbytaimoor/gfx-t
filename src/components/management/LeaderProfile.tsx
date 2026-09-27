@@ -64,6 +64,7 @@ export function LeaderProfile({ leader, index }: { leader: Leader; index: number
               alt={leader.portrait.alt}
               fill
               sizes="(max-width: 768px) 100vw, 42vw"
+              quality={90}
               className="object-cover"
             />
           </div>

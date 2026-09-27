@@ -132,7 +132,7 @@ export function WhyChooseUs() {
 
             {/* Core: the GFX-T nib on signal. */}
             <div data-core className="absolute left-1/2 top-1/2 grid size-[22%] -translate-x-1/2 -translate-y-1/2 place-items-center bg-signal shadow-[0_0_60px_rgb(255_191_1/0.35)]">
-              <Image src="/brand/gfxt-pen-paper.png" alt="" width={188} height={158} className="w-[62%] invert" />
+              <Image src="/brand/gfxt-pen-paper.png" alt="" width={188} height={158} unoptimized className="w-[62%] invert" />
             </div>
           </div>
 

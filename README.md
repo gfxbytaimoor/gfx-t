@@ -11,7 +11,7 @@ npm run typecheck
 npm run images     # optimise client-supplied images (see below)
 ```
 
-Set `NEXT_PUBLIC_SITE_URL` to the production domain before deploying — it drives canonical URLs, the sitemap and Open Graph tags. Until then a non-resolving `.example` placeholder is used.
+The production domain is `https://gfx-t.com` (set in `src/lib/site.ts`); it drives canonical URLs, the sitemap, robots.txt and Open Graph tags. Set `NEXT_PUBLIC_SITE_URL` only to override it (e.g. a staging deploy). Redirect `www.gfx-t.com` to `gfx-t.com` at the host so there is one canonical address.
 
 ## Creative system
 
@@ -52,7 +52,7 @@ Originals go in `assets-src/` (git-ignored); `npm run images` writes optimised W
 
 `tone: "dark"` logos are inverted on dark surfaces. Entries without a logo render as a typographic wordmark.
 
-**Portfolio** — `assets-src/portfolio/<project-slug>/*.jpg`, run `npm run images`, then add an entry to `portfolio` in `src/data/portfolio.ts` (cover + media with the printed width/height). The exhibition, filters and viewer switch on automatically; while the list is empty the page shows an honest "being installed" state.
+**Portfolio** — `assets-src/portfolio/<project-slug>/*.jpg`, run `npm run images`, then add an entry to `portfolio` in `src/data/portfolio.ts` (cover + media with the printed width/height, the brand as `title` and what the piece is as `detail`). The exhibition and filters switch on automatically; while the list is empty the page shows an honest "being installed" state.
 
 ## Contact & social
 

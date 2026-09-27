@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF first (smallest), WebP fallback. Portfolio and portraits are served through next/image.
     formats: ["image/avif", "image/webp"],
-    qualities: [75, 85],
+    // 90 is used for artwork and portraits (see src/lib/image.ts); 75 stays the default elsewhere.
+    qualities: [75, 85, 90],
   },
 };
 

@@ -1,14 +1,15 @@
 /**
  * Site-wide configuration. Content source of truth: "GFX-T_Website Content" Word document.
  *
- * NOTE: The production domain is not confirmed yet. Set NEXT_PUBLIC_SITE_URL once it is;
- * the placeholder below uses the reserved `.example` TLD so it can never resolve to a real site.
+ * Production domain: https://gfx-t.com (apex, no www). NEXT_PUBLIC_SITE_URL can override it, e.g.
+ * for a staging deploy; canonical URLs, the sitemap, robots.txt and Open Graph tags all use it.
  */
 export const site = {
   name: "GFX-T",
   legalName: "GFX-T Creative Agency",
   descriptor: "Creative Agency",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.gfx-t.example",
+  // `||` not `??`: an env var that is set but empty must fall back too, or `new URL("")` breaks the build.
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://gfx-t.com",
   founded: 2020,
   tagline:
     "At GFX-T, we craft unforgettable experiences, blending creativity, strategy, and innovation to elevate brands and create lasting impressions.",

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Client } from "@/data/clients";
 import { cn } from "@/lib/cn";
+import { artworkImageProps } from "@/lib/image";
 
 type Props = {
   client: Client;
@@ -35,6 +36,7 @@ export function ClientMark({ client, surface = "ink", className, logoHeight = 40
         height={logo.height}
         alt={client.name}
         sizes="240px"
+        {...artworkImageProps(logo.width)}
         style={{ height, width: "auto" }}
         className={cn("max-w-full object-contain", invert && "invert", className)}
       />

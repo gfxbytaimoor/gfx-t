@@ -163,8 +163,9 @@ export function Hero() {
 
           <h1
             id="hero-heading"
-            // Sized by width AND height so all three lines always fit the stage.
-            className="mt-5 whitespace-nowrap font-display text-[min(11.4vw,8.6svh)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] md:mt-7 md:text-[min(7.2vw,12.5svh)]"
+            // Sized by width AND height so all three lines always fit the stage. On phones the width
+            // term divides the space inside the gutters by the widest line ("We Strategize." ≈ 8.51em).
+            className="mt-5 whitespace-nowrap font-display text-[length:min(calc((100vw_-_2*var(--spacing-gutter))/8.7),8.6svh)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] md:mt-7 md:text-[min(7.2vw,12.5svh)]"
             onPointerLeave={() => setHovered(null)}
           >
             {site.heroHeading.map((line, i) => {

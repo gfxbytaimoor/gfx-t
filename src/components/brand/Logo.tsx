@@ -24,7 +24,9 @@ export function Logo({ tone = "paper", variant = "wordmark", className, priority
       width={width}
       height={height}
       alt="GFX-T Creative Agency"
-      priority={priority}
+      // `priority` on next/image is deprecated in Next 16; above-the-fold logos just load eagerly.
+      loading={priority ? "eager" : undefined}
+      quality={90}
       sizes="(max-width: 768px) 140px, 240px"
       className={cn("h-auto select-none", className)}
     />
