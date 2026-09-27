@@ -65,6 +65,15 @@ const SOCIAL: Piece[] = [
   ["social-14", "high-life-big-buy", 300, 300],
   ["social-15", "young-stunners", 298, 300],
   ["social-16", "easypaisa-easyverse", 300, 300],
+  ["social-17", "baskin-robins", 2560, 1706],
+  ["social-18", "baskin-robins2", 25000, 25000],
+  ["social-19", "baskins-robins3", 300, 400],
+  ["social-20", "baskin-robins4", 300, 300],
+  ["social-21", "baskin-robins5", 300, 300],
+  ["social-22", "baskin-robins6", 300, 300],
+  ["social-23", "lala2", 300, 300],
+  ["social-24", "rickeys3", 300, 300],
+
 ];
 
 /** Brand identities — [slug, file, width, height, name as written in the mark]. */
