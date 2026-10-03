@@ -85,7 +85,7 @@ const organizationJsonLd = {
     addressLocality: contact.address.city,
     addressCountry: contact.address.countryCode,
   },
-  founder: { "@type": "Person", name: "Syed Zamir Ahmad Naushahi" },
+  founder: { "@type": "Person", name: "Syed Zamir A. Naushahi" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

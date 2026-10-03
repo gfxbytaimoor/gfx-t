@@ -8,11 +8,6 @@ import { SocialLinks } from "@/components/ui/SocialLinks";
 
 const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address.full)}`;
 
-const credits = [
-  { name: "Hira Baig", href: "https://portfolio-website-new-opal.vercel.app/" },
-  { name: "OBD", href: "https://omerbindawood.github.io/Portfolio-Website/" },
-];
-
 /** Label that rolls up to a signal-yellow copy on hover (same move as the header links). */
 function Roll({ children }: { children: React.ReactNode }) {
   return (
@@ -109,34 +104,6 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Credits */}
-      <div className="border-t border-ink-800 bg-ink-950">
-        <p className="container-page label flex flex-wrap items-center justify-center gap-x-3 gap-y-2 py-4 text-center text-ink-400">
-          <span className="flex items-center gap-2">
-            <span aria-hidden className="size-1.5 bg-signal" />
-            Designed &amp; developed by
-          </span>
-          <span className="flex items-center gap-4">
-            {credits.map((c, i) => (
-              <span key={c.name} className="flex items-center gap-4">
-                {i > 0 && <span aria-hidden className="text-ink-500">&amp;</span>}
-                <a
-                  href={c.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative inline-flex items-center font-medium text-paper transition-colors duration-300 hover:text-signal"
-                >
-                  {c.name}
-                  <span aria-hidden className="absolute -right-3 top-0 -translate-x-1 opacity-0 transition-[transform,opacity] duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-                    ↗
-                  </span>
-                  <span aria-hidden className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-signal transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-x-100" />
-                </a>
-              </span>
-            ))}
-          </span>
-        </p>
-      </div>
     </footer>
   );
 }

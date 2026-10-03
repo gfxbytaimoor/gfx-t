@@ -22,7 +22,7 @@ export function LeaderProfile({ leader, index }: { leader: Leader; index: number
   const paper = leader.surface === "paper";
   const flip = index % 2 === 1;
 
-  // Last word of the name is set heavier and wider: "Syed Zamir Ahmad / NAUSHAHI".
+  // Last word of the name is set heavier and wider: "Syed Zamir A. / NAUSHAHI".
   const words = leader.name.split(" ");
   const family = words.pop();
   const given = words.join(" ");
@@ -74,7 +74,8 @@ export function LeaderProfile({ leader, index }: { leader: Leader; index: number
           </figcaption>
         </figure>
 
-        <div className={cn("flex flex-col md:col-span-7 lg:col-span-6", flip ? "md:order-1 md:col-start-1" : "md:col-start-6 lg:col-start-7")}>
+        {/* Mirrored 5 + 7 split: portrait and copy fill the full width on both profiles. */}
+        <div className={cn("flex min-w-0 flex-col md:col-span-7", flip ? "md:order-1 md:col-start-1" : "md:col-start-6")}>
           <p className={cn("label flex items-center gap-3", paper ? "text-ink-700" : "text-ink-300")}>
             <span className={cn("size-2", paper ? "bg-ink-950" : "bg-signal")} aria-hidden />
             {leader.role}
@@ -91,13 +92,13 @@ export function LeaderProfile({ leader, index }: { leader: Leader; index: number
             <span className={cn("label pb-2", paper ? "text-ink-700" : "text-ink-300")}>{leader.experience.unit}</span>
           </div>
 
-          <RevealText split="words" className={cn("mt-10 max-w-xl text-lead", paper ? "text-ink-800" : "text-paper/85")}>
+          <RevealText split="words" className={cn("mt-10 text-lead", paper ? "text-ink-800" : "text-paper/85")}>
             {leader.bio}
           </RevealText>
 
           <div className="mt-12">
             <p className={cn("label mb-4", paper ? "text-ink-700" : "text-ink-400")}>International experience</p>
-            <ReachMap places={leader.reach} tone={paper ? "paper" : "ink"} className="max-w-xl" />
+            <ReachMap places={leader.reach} groupLabel={leader.reachLabel} tone={paper ? "paper" : "ink"} />
           </div>
         </div>
       </div>

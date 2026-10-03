@@ -52,7 +52,7 @@ export function ClosingCta() {
               <span className="mt-2 block text-h3 leading-tight transition-colors group-hover:text-signal">{contact.email}</span>
             </a>
             <a href={contact.ceoPhone.href} className="group block border-l-2 border-ink-700 pl-5 transition-colors hover:border-signal">
-              <span className="label block text-ink-400">Book a call with our CEO &amp; Founder</span>
+              <span className="label block text-ink-400">Book a call with us</span>
               <span className="mt-2 block text-h3 leading-tight transition-colors group-hover:text-signal">{contact.ceoPhone.display}</span>
             </a>
           </address>

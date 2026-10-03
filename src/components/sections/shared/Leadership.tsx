@@ -25,7 +25,7 @@ export function Leadership({ index, compact, className }: { index: string; compa
           </div>
           <div>
             <ActionLink href="/management" variant="primary" size="lg" wrap>
-              Meet our CEO &amp; Founder and COO
+              Meet our CEO &amp; COO
             </ActionLink>
           </div>
         </div>

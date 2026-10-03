@@ -31,33 +31,33 @@ export const clientCategories: { id: ClientCategory; label: string }[] = [
 ];
 
 /**
- * Logos currently on file — cropped from the "Our Prestigious Clients" page of the GFX-T company
- * profile (PDF), so they are low-resolution. Replace each with the client's original artwork by
- * re-running `npm run images` with the same file name; only width/height here may change.
+ * Logos on file — the client's original artwork (trimmed to the mark; white-only marks recoloured
+ * to ink so they read on paper). Saadi's Enterprises is still the crop from the company profile.
+ * To replace one, re-run `npm run images` with the same file name; only width/height here change.
  */
 const LOGOS: Record<string, [number, number]> = {
-  "bellezza-salon": [381, 120],
-  "rosmatic": [258, 252],
-  "stylo": [189, 222],
-  "suhairas-beauty-hub": [318, 120],
-  "al-nasser": [252, 213],
-  "divinely-crafted": [456, 201],
-  "futbolux": [477, 96],
-  "javandi": [249, 258],
-  "lala": [225, 261],
-  "munib-nawaz": [318, 207],
-  "baskin-robbins": [384, 87],
-  "boxpark-pica": [375, 129],
-  "gauchos": [303, 54],
-  "meet-me-in-paris": [588, 126],
-  "rickys": [285, 150],
-  "wild-wings": [294, 219],
-  "fuego-events-pr": [252, 237],
-  "gosaas-labs": [336, 186],
-  "mb-marketing": [273, 225],
-  "poepa": [288, 297],
+  "bellezza-salon": [680, 260],
+  "rosmatic": [424, 420],
+  "stylo": [442, 156],
+  "suhairas-beauty-hub": [275, 109],
+  "al-nasser": [362, 298],
+  "divinely-crafted": [573, 420],
+  "futbolux": [680, 164],
+  "javandi": [400, 420],
+  "lala": [416, 420],
+  "munib-nawaz": [374, 244],
+  "baskin-robbins": [680, 170],
+  "boxpark-pica": [369, 127],
+  "gauchos": [357, 91],
+  "meet-me-in-paris": [680, 171],
+  "rickys": [460, 246],
+  "wild-wings": [398, 299],
+  "fuego-events-pr": [450, 420],
+  "gosaas-labs": [680, 309],
+  "mb-marketing": [512, 420],
+  "poepa": [233, 238],
   "saadis-enterprises": [222, 276],
-  "tower-9-luxury-living": [150, 294],
+  "tower-9-luxury-living": [213, 420],
 };
 
 const group = (category: ClientCategory, names: string[]): Client[] =>

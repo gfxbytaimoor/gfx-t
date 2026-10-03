@@ -229,8 +229,8 @@ export function VisionMission({ index }: Props) {
                   id={`${b.id}-heading`}
                   className={cn(
                     "font-display text-h2 font-bold uppercase transition-colors duration-700",
-                    // Vision reads expanded (possibility); Mission condensed (structure).
-                    b.id === "vision" ? "[font-variation-settings:'wdth'_120]" : "[font-variation-settings:'wdth'_84]",
+                    // Both statements share one expanded heading style.
+                    "[font-variation-settings:'wdth'_120]",
                     mode === b.id ? "text-paper" : "lg:text-ink-500",
                   )}
                 >

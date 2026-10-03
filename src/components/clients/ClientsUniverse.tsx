@@ -71,20 +71,21 @@ export function ClientsUniverse() {
               key={c.slug}
               data-flip-id={c.slug}
               hidden={!shown}
-              className="group relative flex aspect-[4/3] flex-col justify-between border-b border-r border-ink-950/15 p-3 md:p-5"
+              className="group relative flex aspect-[4/3] flex-col justify-between overflow-hidden border-b border-r border-ink-950/15 p-3 md:p-5"
             >
               <SelectionBox visible={false} tone="ink" className="inset-0 group-hover:opacity-100" />
               <div className="label flex justify-between gap-2 text-ink-700">
                 <span>{String(i + 1).padStart(2, "0")}</span>
                 <span>{labelFor(c.category)}</span>
               </div>
-              <div className="flex flex-1 items-center justify-center py-3">
+              {/* min-h-0 + max-h-full: tall marks shrink to the tile instead of stretching its row. */}
+              <div className="flex min-h-0 flex-1 items-center justify-center py-3">
                 <ClientMark
                   client={c}
                   surface="paper"
                   wrap
                   logoHeight={120}
-                  className="max-h-[120px] text-center text-[clamp(1.05rem,0.8rem+1.2vw,1.8rem)] leading-none text-ink-950 grayscale opacity-80 transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                  className="max-h-full text-center text-[clamp(1.05rem,0.8rem+1.2vw,1.8rem)] leading-none text-ink-950 grayscale opacity-80 transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
                 />
               </div>
               <p aria-hidden={!!c.logo} className="label truncate text-ink-950">

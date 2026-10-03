@@ -245,6 +245,42 @@ html.lenis body {
   }
 }
 
+/* Mobile hero field (HeroMobileField): each path draws in, holds, then draws out; its anchor and
+   handles appear while it is drawn; the grid of anchor points breathes. */
+@keyframes hero-draw {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  40%,
+  62% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1;
+  }
+}
+@keyframes hero-handle {
+  0%,
+  18%,
+  86%,
+  100% {
+    opacity: 0;
+  }
+  36%,
+  66% {
+    opacity: 1;
+  }
+}
+@keyframes hero-point {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 /* Page-intro scroll cue: a short signal stroke travelling along a hairline. */
 @keyframes scroll-cue {
   0% {

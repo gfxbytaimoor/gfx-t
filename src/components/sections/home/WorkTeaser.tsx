@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { MobileShapes } from "@/components/ui/MobileShapes";
 import { useRef } from "react";
-import { portfolio, portfolioIntro, type PortfolioProject } from "@/data/portfolio";
-import { artworkImageProps, SMALL_SOURCE_MAX } from "@/lib/image";
+import { portfolio, portfolioIntro } from "@/data/portfolio";
+import { artworkImageProps } from "@/lib/image";
 import { gsap, useGSAP, registerGsap } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/device";
 import { ActionLink } from "@/components/buttons/ActionLink";
@@ -18,17 +18,8 @@ const COLUMNS = 4;
 /** Relative drift per column while the section crosses the viewport (percent of its height). */
 const DRIFT = [-8, 6, -12, 4];
 
-/** Tiles are square crops: sharp, roughly square posts first (little is cropped, nothing upscaled). */
-const sharpFirst = (p: PortfolioProject) => {
-  const { width, height } = p.cover;
-  return width >= SMALL_SOURCE_MAX && width / height > 0.75 && width / height < 1.4 ? 0 : 1;
-};
-const TEASER_PIECES = portfolio
-  .filter((p) => p.category === "social")
-  .map((p, i) => ({ p, i }))
-  .sort((a, b) => sharpFirst(a.p) - sharpFirst(b.p) || a.i - b.i)
-  .slice(0, 12)
-  .map(({ p }) => p);
+/** The first twelve posts, in the order set in data/portfolio.ts (dealt left to right, row by row). */
+const TEASER_PIECES = portfolio.filter((p) => p.category === "social").slice(0, 12);
 
 /**
  * SELECTED WORK — the proof chapter. Real posts from the portfolio hang in four columns that
@@ -97,6 +88,7 @@ export function WorkTeaser() {
                   fill
                   sizes="(max-width: 768px) 50vw, 22vw"
                   {...artworkImageProps(p.cover.width)}
+                  style={p.cover.position ? { objectPosition: p.cover.position } : undefined}
                   className="object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
                 />
               </TransitionLink>

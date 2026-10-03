@@ -150,10 +150,10 @@ export function AnchorFieldScene({ state, quality, still = false }: Props) {
     const halfW = 3.47 * aspect; // visible half-width at z=0 (camera z 11, fov 35)
     // Headline and copy sit top-left (landscape) / top (portrait), so the form lands low-right / low.
     // Copy top-left (landscape) / top (portrait), form in the free space right / below.
-    // Landscape: toward the centre, low enough that its body sits below the headline and right
-    // of the tagline (the headline fills the upper-left half of the stage).
-    u.uFormOffset.value.set(portrait ? 0 : halfW * 0.34, portrait ? -2.3 + m2 * 0.1 : -1.4 + m2 * 0.1, 0);
-    u.uFormScale.value = portrait ? Math.min(0.62, halfW * 0.28) : Math.min(1.1, halfW * 0.19);
+    // Landscape: large, filling the lower-right of the stage — its tall right side beside the
+    // headline, its narrow left side (the ferrules) below the headline and right of the tagline.
+    u.uFormOffset.value.set(portrait ? 0 : halfW * 0.565, portrait ? -2.3 + m2 * 0.1 : -0.95 + m2 * 0.1, 0);
+    u.uFormScale.value = portrait ? Math.min(0.62, halfW * 0.28) : Math.min(1.6, halfW * 0.267);
     const px = s.pointerActive ? s.pointer.x : 0;
     const py = s.pointerActive ? s.pointer.y : 0;
     // Ends nearly face-on (the mark stays legible) with just enough yaw to reveal its depth layers.

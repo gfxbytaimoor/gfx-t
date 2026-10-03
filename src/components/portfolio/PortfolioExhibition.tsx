@@ -6,7 +6,7 @@ import { portfolio, portfolioCategories, portfolioNote, type PortfolioCategory, 
 import { mailto } from "@/lib/site";
 import { artworkImageProps } from "@/lib/image";
 import { Flip, gsap, motion, useGSAP, registerGsap } from "@/lib/motion";
-import { useReducedMotion } from "@/lib/device";
+import { useMediaQuery, useReducedMotion } from "@/lib/device";
 import { FilterChips, type FilterOption } from "@/components/ui/FilterChips";
 import { ActionLink } from "@/components/buttons/ActionLink";
 import { ExhibitionPending } from "./ExhibitionPending";
@@ -18,12 +18,17 @@ type Filter = PortfolioCategory | "all";
 /**
  * PORTFOLIO — an exhibition wall. Pieces hang in a masonry of columns at their own proportions,
  * so every piece is shown whole (posters, standees and billboards alike), and re-flow with FLIP
- * when filtered. The wall is for looking only: pieces are not links and do not open a viewer.
+ * when filtered. Each piece, in data order, joins the shortest column, so the wall reads left to
+ * right in the same sequence as the home page and the columns finish level. The wall is for looking only: pieces are not links and do not open a viewer.
  * With no data it renders the pending exhibition instead.
  */
 export function PortfolioExhibition({ projects = portfolio }: { projects?: PortfolioProject[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const reduced = useReducedMotion();
+  // Column count per breakpoint (matches the 2 / 3 / 4 columns the wall used before).
+  const md = useMediaQuery("(min-width: 768px)", true);
+  const xl = useMediaQuery("(min-width: 1280px)", true);
+  const columnCount = xl ? 4 : md ? 3 : 2;
   const wallRef = useRef<HTMLDivElement>(null);
   const flipState = useRef<Flip.FlipState>(null);
 
@@ -31,6 +36,18 @@ export function PortfolioExhibition({ projects = portfolio }: { projects?: Portf
   const isVisible = (p: PortfolioProject) => visible.includes(p);
   const works = projects.filter((p) => p.category !== "branding");
   const identities = projects.filter((p) => p.category === "branding");
+  // Visible pieces go, in order, into whichever column is currently shortest (by the pieces'
+  // proportions), so the sequence reads left to right and the columns end level instead of
+  // leaving gaps. Filtered-out pieces stay mounted (hidden) for FLIP.
+  const columns: PortfolioProject[][] = Array.from({ length: columnCount }, () => []);
+  const heights = Array<number>(columnCount).fill(0);
+  for (const p of works.filter(isVisible)) {
+    const c = heights.indexOf(Math.min(...heights));
+    columns[c].push(p);
+    // Relative tile height: the image at column width plus a constant for the caption.
+    heights[c] += p.cover.height / p.cover.width + 0.28;
+  }
+  columns[columnCount - 1].push(...works.filter((p) => !isVisible(p)));
 
   const choose = (next: Filter) => {
     if (next === filter) return;
@@ -77,13 +94,17 @@ export function PortfolioExhibition({ projects = portfolio }: { projects?: Portf
 
       <div ref={wallRef} className="relative mt-10">
         {/* Posts and campaigns: a masonry of columns, each piece at its own proportions. */}
-        <ol hidden={!works.some(isVisible)} className="columns-2 gap-3 md:columns-3 md:gap-5 xl:columns-4">
-          {works.map((p) => (
-            <li key={p.slug} data-flip-id={p.slug} hidden={!isVisible(p)} className="mb-6 break-inside-avoid md:mb-8">
-              <PieceTile project={p} number={projects.indexOf(p) + 1} />
-            </li>
+        <div hidden={!works.some(isVisible)} className="flex items-start gap-3 md:gap-5">
+          {columns.map((col, c) => (
+            <ol key={c} className="min-w-0 flex-1">
+              {col.map((p) => (
+                <li key={p.slug} data-flip-id={p.slug} hidden={!isVisible(p)} className="mb-6 md:mb-8">
+                  <PieceTile project={p} number={projects.indexOf(p) + 1} />
+                </li>
+              ))}
+            </ol>
           ))}
-        </ol>
+        </div>
         {/* Brand identities are all square cards, so they sit in an even grid of their own. */}
         <ol hidden={!identities.some(isVisible)} className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-x-5 md:gap-y-8 xl:grid-cols-5">
           {identities.map((p) => (
@@ -115,7 +136,8 @@ function PieceTile({ project, number }: { project: PortfolioProject; number: num
   return (
     <figure>
       {identity ? (
-        // Logos sit on a white card so each mark reads as it was designed.
+        // Logos sit on a white card so each mark reads as it was designed; square artboards with
+        // their own background fill the card edge to edge.
         <span className="relative block aspect-square overflow-hidden bg-white">
           <Image
             src={cover.src}
@@ -124,7 +146,7 @@ function PieceTile({ project, number }: { project: PortfolioProject; number: num
             sizes={TILE_SIZES}
             loading={loading}
             {...artworkImageProps(cover.width)}
-            className="object-contain p-[10%]"
+            className={cover.bleed ? "object-cover" : "object-contain p-[10%]"}
           />
         </span>
       ) : (

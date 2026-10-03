@@ -21,11 +21,7 @@ export type Phone = { display: string; href: string; label?: string };
 
 export const contact = {
   email: "info@gfx-t.com",
-  phones: [
-    { display: "+92 321 4006247", href: "tel:+923214006247" },
-    { display: "+92 324 0321027", href: "tel:+923240321027" },
-    { display: "+92 300 9453725", href: "tel:+923009453725", label: "CEO & Founder direct line" },
-  ] satisfies Phone[],
+  phones: [{ display: "+92 300 9453725", href: "tel:+923009453725", label: "For further information, contact us" }] satisfies Phone[],
   /**
    * Social profiles. `href: null` renders the icon without a link until the handle is supplied —
    * then set the full profile URL here and every icon on the site becomes a link.
@@ -35,7 +31,7 @@ export const contact = {
     { name: "LinkedIn", href: "https://www.linkedin.com/company/gfx-t/" },
     { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61594761962092" },
   ] as { name: "Instagram" | "LinkedIn" | "Facebook"; href: string | null }[],
-  /** The number the Word doc names for "book a call directly with our CEO". */
+  /** The number for "Book a call with us" (the site's only phone number). */
   ceoPhone: { display: "+92 300 9453725", href: "tel:+923009453725" } satisfies Phone,
   address: {
     street: "677-B, Faisal Town",

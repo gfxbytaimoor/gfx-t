@@ -7,8 +7,9 @@
  *  - `detail` says what the piece is, as read from the artwork;
  *  - brand identities are titled with the name written in the mark itself.
  *
- * Pieces 01–04, 06, 11, 13, 14 and the brand marks are low-resolution crops from the company
- * profile (PDF); replacing them with the original exports is the only way to make them sharper.
+ * Everything is the client's original export except "Fired Up", "Lahore Hot Pot", "Zamurd
+ * Collection" and the SJ Closet / GBT / DNF / Perplexion marks, which are still
+ * low-resolution crops from the company profile (PDF) until originals are supplied.
  *
  * To add or upgrade work: put originals in `assets-src/portfolio/<slug>/`, run `npm run images`,
  * and add/update the entry below (width/height as printed by the script).
@@ -21,6 +22,10 @@ export type PortfolioMedia = {
   width: number;
   height: number;
   alt: string;
+  /** CSS object-position for square crops (e.g. "top" keeps a logo at the top of a tall post in view). */
+  position?: string;
+  /** Brand cards only: the file is a square artboard with its own background, shown edge to edge. */
+  bleed?: boolean;
 };
 
 export type PortfolioProject = {
@@ -50,56 +55,76 @@ export const portfolioNote = "Complete portfolio will be provided on client's re
 export const portfolioIntro =
   "A selection of our past creative work: social media posts, campaign ads and branding visuals, along with the brand and project logos we have designed.";
 
-type Piece = [slug: string, file: string, width: number, height: number, brand: string, detail: string, clientSlug?: string];
+type Piece = [slug: string, file: string, width: number, height: number, brand: string, detail: string, clientSlug?: string, position?: string];
 
+// Order: the twelve pieces the home page shows (in this sequence), then the rest of the wall —
+// ordered so the portfolio columns finish level at 2, 3 and 4 columns — and the two billboards last.
 const SOCIAL: Piece[] = [
-  ["social-01", "javandi-luxury-event", 280, 292, "Javandi", "Luxury Pret launch event", "javandi"],
-  ["social-02", "pizza-post", 298, 298, "Fired Up", "Pizza promotion"],
-  ["social-03", "high-life-massage-chair", 300, 298, "High Life", "iRest massage chair promotion"],
-  ["social-04", "darkside-car-care", 300, 298, "Car Vogue", "DarkSide tyre cleaner promotion"],
   ["social-05", "gauchos", 1080, 1080, "Gauchos", "“Bigger & Better” reopening", "gauchos"],
-  ["social-06", "choice-of-meat", 300, 300, "Lahore Hot Pot", "Menu promotion"],
-  ["social-07", "rickeys", 1080, 1080, "Ricky's", "Relocation announcement", "rickys"],
-  ["social-08", "lala", 1080, 1350, "Lala", "Mahar'jan festive collection teaser", "lala"],
+  ["social-11", "boxpark-cheeto-burger", 2000, 2000, "Boxpark Pica", "Cheeto slider burger promotion", "boxpark-pica"],
+  ["social-08", "lala", 1080, 1350, "Lala", "Mahar'jan festive collection teaser", "lala", "top"],
   ["social-09", "artisan-chocolate", 1080, 1080, "Artisan Coffee Roaster", "Chocolate dessert promotion"],
   ["social-10", "rickeys2", 1080, 1080, "Ricky's", "Delivery launch", "rickys"],
-  ["social-11", "boxpark-cheeto-burger", 300, 300, "Boxpark Pica", "Cheeto slider burger promotion", "boxpark-pica"],
-  ["social-12", "javandi2", 500, 500, "Javandi", "30% off sale", "javandi"],
-  ["social-13", "pre-booking-collection", 295, 292, "Zamurd Collection", "Pre-booking campaign"],
-  ["social-14", "high-life-big-buy", 300, 300, "High Life", "Big Buy sale"],
   ["social-15", "young-stunners", 1080, 1080, "Young Stunners × Asim Azhar", "#EatToTheBeat event artwork"],
   ["social-16", "easypaisa", 2000, 2000, "Easypaisa", "Easyverse activation"],
-  ["social-17", "baskin-robins", 2400, 1599, "Baskin Robbins", "31% off roll-up standees", "baskin-robbins"],
-  ["social-18", "baskin-robins2", 1600, 1308, "Baskin Robbins", "Lake City standee designs", "baskin-robbins"],
-  ["social-19", "baskins-robins3", 900, 1600, "Baskin Robbins", "Marketplace 204 store opening", "baskin-robbins"],
-  ["social-20", "baskin-robins4", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
-  ["social-21", "baskin-robins5", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
-  ["social-22", "baskin-robins6", 1600, 1200, "Baskin Robbins", "Merchandise T-shirt design", "baskin-robbins"],
+  ["social-25", "baskin-robbins-flavour-roll-call", 692, 858, "Baskin Robbins", "Flavour Roll Call giveaway", "baskin-robbins", "top"],
+  ["social-07", "rickeys", 1080, 1080, "Ricky's", "Relocation announcement", "rickys"],
   ["social-23", "lala2", 1080, 1080, "Lala", "Vintage Swiss voile pre-booking", "lala"],
   ["social-24", "rickeys3", 1080, 1080, "Ricky's", "New location opening", "rickys"],
+  ["social-12", "javandi2", 500, 500, "Javandi", "30% off sale", "javandi"],
+  ["social-22", "baskin-robins6", 1600, 1200, "Baskin Robbins", "Merchandise T-shirt design", "baskin-robbins"],
+  ["social-04", "darkside-car-care", 2000, 2000, "Car Vogue", "DarkSide tyre cleaner promotion"],
+  ["social-26", "javandi-luxury-event2", 2400, 2400, "Javandi", "Luxury Pret launch event", "javandi"],
+  ["social-19", "baskins-robins3", 900, 1600, "Baskin Robbins", "Marketplace 204 store opening", "baskin-robbins"],
+  ["social-02", "pizza-post", 298, 298, "Fired Up", "Pizza promotion"],
+  ["social-14", "high-life-big-buy", 1080, 1080, "High Life", "Big Buy sale"],
+  ["social-06", "choice-of-meat", 300, 300, "Lahore Hot Pot", "Menu promotion"],
+  ["social-01", "javandi-luxury-event", 2400, 2400, "Javandi", "Luxury Pret launch event", "javandi"],
+  ["social-13", "pre-booking-collection", 295, 292, "Zamurd Collection", "Pre-booking campaign"],
+  ["social-27", "artisan-coffee", 1080, 1080, "Artisan Coffee Roaster", "Coffee promotion"],
+  ["social-03", "high-life-massage-chair", 2400, 2400, "High Life", "iRest massage chair promotion"],
+  ["social-18", "baskin-robins2", 1600, 1308, "Baskin Robbins", "Lake City standee designs", "baskin-robbins"],
+  ["social-17", "baskin-robins", 2400, 1599, "Baskin Robbins", "31% off roll-up standees", "baskin-robbins"],
+  ["social-20", "baskin-robins4", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
+  ["social-21", "baskin-robins5", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
 ];
 
-/** Brand identities — [slug, file, width, height, name as written in the mark]. */
-const BRANDS: [string, string, number, number, string][] = [
-  ["brand-tibbi", "tibbi", 275, 88, "Tibbi"],
-  ["brand-meeyaar", "meeyaar", 348, 312, "Meeyaar"],
-  ["brand-abwaab", "abwaab", 212, 250, "Abwaab"],
-  ["brand-vite-media", "vite-media", 350, 335, "Vitè Media"],
-  ["brand-sj-closet", "sj-closet", 330, 328, "SJ Closet"],
-  ["brand-gbt-graphics", "gbt-graphics", 372, 352, "GBT Graphics"],
-  ["brand-dnf-industries", "dnf-industries", 372, 298, "DNF Industries"],
-  ["brand-bnm-industries", "bnm-industries", 272, 170, "BNM Industries"],
-  ["brand-perplexion", "perplexion", 348, 345, "Perplexion"],
-  ["brand-sentimental-extracts", "sentimental-extracts", 345, 348, "Sentimental Extracts"],
+/**
+ * Brand identities — [slug, file, width, height, name as written in the mark, full-bleed card?].
+ * Full-bleed files are square artboards with their own background; the rest sit on a white card.
+ */
+const BRANDS: [string, string, number, number, string, boolean][] = [
+  ["brand-seven-media", "seven-media", 640, 640, "Seven Media", true],
+  ["brand-cruffles", "cruffles", 640, 640, "Cruffles", true],
+  ["brand-abwaab", "abwaab", 462, 513, "Abwaab", false],
+  ["brand-fuego-events", "fuego-events", 1080, 1080, "Fuego Events PR", true],
+  ["brand-meeyaar", "meeyaar", 1080, 1080, "Meeyaar", true],
+  ["brand-meet-me-in-paris", "meet-me-in-paris", 640, 640, "Meet Me in Paris", true],
+  ["brand-zh-marketers", "zh-marketers", 1080, 1080, "ZH Marketers", true],
+  ["brand-carne", "carne", 1080, 1080, "Carné Steakhouse", true],
+  ["brand-vite-media", "vite-media", 1080, 1080, "Vitè Media", true],
+  ["brand-bnm-industries", "bnm-industries", 1080, 1080, "BNM Industries", true],
+  ["brand-tibbi", "tibbi", 447, 447, "Tibbi", false],
+  ["brand-sentimental-extracts", "sentimental-extracts", 1080, 1080, "Sentimental Extracts", true],
+  ["brand-aesthetics-lab", "aesthetics-lab", 1080, 1080, "Aesthetics Lab", true],
+  ["brand-crust-culture", "crust-culture", 1080, 1080, "Crust Culture", true],
+  ["brand-redwood", "redwood", 1080, 1080, "Redwood", true],
+  ["brand-moxie", "moxie", 1080, 1080, "Moxie", true],
+  ["brand-russos", "russos", 1080, 1080, "Russo's", true],
+  ["brand-the-crown", "the-crown", 1080, 1080, "The Crown", true],
+  ["brand-sj-closet", "sj-closet", 330, 328, "SJ Closet", false],
+  ["brand-gbt-graphics", "gbt-graphics", 372, 352, "GBT Graphics", false],
+  ["brand-dnf-industries", "dnf-industries", 372, 298, "DNF Industries", false],
+  ["brand-perplexion", "perplexion", 348, 345, "Perplexion", false],
 ];
 
 export const portfolio: PortfolioProject[] = [
-  ...SOCIAL.map(([slug, file, width, height, brand, detail, clientSlug]): PortfolioProject => {
-    const media = { src: `/portfolio/${slug}/${file}.webp`, width, height, alt: `${brand} — ${detail}, designed by GFX-T` };
+  ...SOCIAL.map(([slug, file, width, height, brand, detail, clientSlug, position]): PortfolioProject => {
+    const media = { src: `/portfolio/${slug}/${file}.webp`, width, height, alt: `${brand} — ${detail}, designed by GFX-T`, position };
     return { slug, title: brand, detail, clientSlug, category: "social", services: [], cover: media, media: [media] };
   }),
-  ...BRANDS.map(([slug, file, width, height, name]): PortfolioProject => {
-    const media = { src: `/portfolio/${slug}/${file}.webp`, width, height, alt: `${name} logo designed by GFX-T` };
+  ...BRANDS.map(([slug, file, width, height, name, bleed]): PortfolioProject => {
+    const media = { src: `/portfolio/${slug}/${file}.webp`, width, height, alt: `${name} logo designed by GFX-T`, bleed };
     return { slug, title: name, detail: "Brand identity", category: "branding", services: ["Branding & Design"], cover: media, media: [media] };
   }),
 ];

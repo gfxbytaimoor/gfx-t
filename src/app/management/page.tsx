@@ -5,7 +5,7 @@ import { leaders, managementHeading } from "@/data/management";
 
 export const metadata: Metadata = {
   title: "Our Management",
-  description: "Meet Syed Zamir Ahmad Naushahi (CEO & Founder) and Syed Taimoor Hassan Naushahi (COO / Creative Head) of GFX-T.",
+  description: "Meet Syed Zamir A. Naushahi (Founder & CEO) and Syed Taimoor Hassan Naushahi (Creative Head & COO) of GFX-T.",
   alternates: { canonical: "/management" },
 };
 

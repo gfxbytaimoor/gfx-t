@@ -35,7 +35,7 @@ export default function ServicesPage() {
       </PageIntro>
 
       <section aria-label="Services" className="container-page py-12 md:py-16">
-        <div className="grid border-l border-t border-ink-800 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid border-l border-t border-ink-800 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <div key={s.slug} data-reveal className="border-b border-r border-ink-800">
               <ServiceArtboard service={s} />
@@ -49,7 +49,7 @@ export default function ServicesPage() {
           <div>
             <p className="label text-signal">Next step</p>
             <h2 id="services-cta" className="mt-3 font-display text-[clamp(1.5rem,1rem+1.8vw,2.5rem)] font-extrabold uppercase leading-tight">
-              Book a call directly with our CEO &amp; Founder
+              Book a call with us
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">

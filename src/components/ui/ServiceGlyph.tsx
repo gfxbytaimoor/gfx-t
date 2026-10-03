@@ -63,15 +63,27 @@ const GLYPHS: Record<GlyphId, Glyph> = {
     ],
     anchors: [[8, 12], [8, 20], [8, 28]],
   },
-  // Social Media Management — a feed grid with one post selected.
-  grid: {
-    strokes: [8, 20, 32].flatMap((y) =>
-      [8, 20, 32].map((x) => ({
-        d: `M${x} ${y} h8 v8 h-8 Z`,
-        selected: x === 20 && y === 20,
-      })),
-    ),
+  // Social Media Management — a share network: one post (selected) reaching two audiences.
+  share: {
+    strokes: [
+      { d: "M17.5 22 L30.5 15" },
+      { d: "M17.5 26 L30.5 33" },
+      { d: "M14 19 A5 5 0 1 1 13.99 19", selected: true },
+      { d: "M35 8 A5 5 0 1 1 34.99 8" },
+      { d: "M35 31 A5 5 0 1 1 34.99 31" },
+    ],
     anchors: [],
+  },
+  // Web Development — a browser window with a code tag, the slash selected.
+  code: {
+    strokes: [
+      { d: "M6 10 H42 V38 H6 Z" },
+      { d: "M6 16 H42" },
+      { d: "M19 21 L13 27 L19 33" },
+      { d: "M29 21 L35 27 L29 33" },
+      { d: "M26 20 L22 34", selected: true },
+    ],
+    anchors: [[10, 13], [15, 13]],
   },
   // Print Media — a printer's registration mark.
   registration: {

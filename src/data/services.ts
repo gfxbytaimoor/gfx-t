@@ -2,11 +2,12 @@ export type ServiceGlyph =
   | "bezier"
   | "signal"
   | "cursor"
-  | "grid"
   | "registration"
   | "broadcast"
   | "camera"
-  | "play";
+  | "play"
+  | "code"
+  | "share";
 
 export type Service = {
   slug: string;
@@ -20,6 +21,7 @@ export type Service = {
 export const servicesIntro =
   "We provide a comprehensive set of services made available to meet every requirement and platform needed for making a brand successful.";
 
+// Alphabetical by title (index follows the order).
 export const services: Service[] = [
   {
     slug: "branding-design",
@@ -30,28 +32,29 @@ export const services: Service[] = [
     glyph: "bezier",
   },
   {
-    slug: "digital-marketing",
-    index: "02",
-    title: "Digital Marketing",
-    description:
-      "Implementing data-driven strategies for social media, paid campaigns to boost brand visibility.",
-    glyph: "signal",
-  },
-  {
     slug: "content-writing-creation",
-    index: "03",
+    index: "02",
     title: "Content Writing & Creation",
     description:
       "Producing high-quality graphics, videos, content, and compelling written content to engage and captivate audiences.",
     glyph: "cursor",
   },
   {
-    slug: "social-media-management",
-    index: "04",
-    title: "Social Media Management",
+    slug: "digital-marketing",
+    index: "03",
+    title: "Digital Marketing",
     description:
-      "Managing and optimizing social media platforms to enhance engagement and brand presence.",
-    glyph: "grid",
+      "Implementing data-driven strategies for social media, paid campaigns to boost brand visibility.",
+    glyph: "signal",
+  },
+  // Added at the client's request (not in the original content document); copy to be confirmed.
+  {
+    slug: "photography",
+    index: "04",
+    title: "Photography",
+    description:
+      "Capturing products, people, spaces, and events in striking imagery that brings a brand's story to life across every platform.",
+    glyph: "camera",
   },
   {
     slug: "print-media",
@@ -69,15 +72,15 @@ export const services: Service[] = [
       "Managing media outreach, press releases, and brand reputation to foster strong public perception and media presence.",
     glyph: "broadcast",
   },
-  // Added at the client's request (not in the original content document); copy to be confirmed.
   {
-    slug: "photography",
+    slug: "social-media-management",
     index: "07",
-    title: "Photography",
+    title: "Social Media Management",
     description:
-      "Capturing products, people, spaces, and events in striking imagery that brings a brand's story to life across every platform.",
-    glyph: "camera",
+      "Managing and optimizing social media platforms to enhance engagement and brand presence.",
+    glyph: "share",
   },
+  // Added at the client's request (not in the original content document); copy to be confirmed.
   {
     slug: "videography",
     index: "08",
@@ -85,5 +88,14 @@ export const services: Service[] = [
     description:
       "Producing engaging videos, from brand films and commercials to social media reels, that capture attention and tell a brand's story.",
     glyph: "play",
+  },
+  // Added at the client's request (not in the original content document); copy to be confirmed.
+  {
+    slug: "web-development",
+    index: "09",
+    title: "Web Development",
+    description:
+      "Designing and building fast, responsive websites that showcase a brand, work on every device, and turn visitors into customers.",
+    glyph: "code",
   },
 ];

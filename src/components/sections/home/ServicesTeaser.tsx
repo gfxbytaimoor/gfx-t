@@ -59,26 +59,30 @@ export function ServicesTeaser() {
       {/* Background: artboard dots + one oversized pen-tool curve with its anchors and handles. */}
       <div aria-hidden className="absolute inset-0 -z-10 opacity-60 [background-image:radial-gradient(rgb(11_11_11/0.12)_1px,transparent_1.2px)] [background-size:28px_28px]" />
       <svg aria-hidden viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 -z-10 h-full w-full">
-        <path d="M-40 640 C 220 640, 300 160, 600 190 S 980 700, 1240 260" fill="none" stroke="rgb(11 11 11 / 0.14)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-        <path data-bg-path d="M-40 640 C 220 640, 300 160, 600 190 S 980 700, 1240 260" fill="none" stroke="var(--color-signal)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
-        <g stroke="rgb(11 11 11 / 0.35)" strokeWidth="1" vectorEffect="non-scaling-stroke">
-          <line x1="360" y1="175" x2="840" y2="205" />
-          <line x1="60" y1="640" x2="220" y2="640" />
+        <path d="M-40 640 C 220 640, 300 60, 600 60 S 980 700, 1240 260" fill="none" stroke="rgb(11 11 11 / 0.14)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <path data-bg-path d="M-40 640 C 220 640, 300 60, 600 60 S 980 700, 1240 260" fill="none" stroke="var(--color-signal)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+        {/* The middle anchor and its handles sit in the section's top padding, clear of the titles
+            (large screens only: on narrower ones the heading runs through that band). */}
+        <g className="hidden lg:inline">
+          <g stroke="rgb(11 11 11 / 0.35)" strokeWidth="1" vectorEffect="non-scaling-stroke">
+            <line x1="360" y1="60" x2="840" y2="60" />
+            <line x1="60" y1="640" x2="220" y2="640" />
+          </g>
+          {[
+            [600, 60, "sq"],
+            [60, 640, "sq"],
+            [1240, 260, "sq"],
+            [360, 60, "c"],
+            [840, 60, "c"],
+            [220, 640, "c"],
+          ].map(([x, y, k]) =>
+            k === "sq" ? (
+              <rect key={`${x}-${y}`} data-bg-point x={Number(x) - 7} y={Number(y) - 7} width="14" height="14" fill="var(--color-signal)" stroke="var(--color-ink-950)" strokeWidth="1.5" />
+            ) : (
+              <circle key={`${x}-${y}`} data-bg-point cx={x} cy={y} r="5" fill="var(--color-ink-950)" />
+            ),
+          )}
         </g>
-        {[
-          [600, 190, "sq"],
-          [60, 640, "sq"],
-          [1240, 260, "sq"],
-          [360, 175, "c"],
-          [840, 205, "c"],
-          [220, 640, "c"],
-        ].map(([x, y, k]) =>
-          k === "sq" ? (
-            <rect key={`${x}-${y}`} data-bg-point x={Number(x) - 7} y={Number(y) - 7} width="14" height="14" fill="var(--color-signal)" stroke="var(--color-ink-950)" strokeWidth="1.5" />
-          ) : (
-            <circle key={`${x}-${y}`} data-bg-point cx={x} cy={y} r="5" fill="var(--color-ink-950)" />
-          ),
-        )}
       </svg>
 
       <MobileShapes variant={1} tone="paper" />

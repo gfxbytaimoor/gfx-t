@@ -8,6 +8,7 @@ import { hasWebGL, useFinePointer, useIsMobile, useReducedMotion } from "@/lib/d
 import { ActionLink } from "@/components/buttons/ActionLink";
 import { HERO_BEATS, type AnchorFieldState } from "@/three/scenes/AnchorFieldScene";
 import { HeroFallback } from "./HeroFallback";
+import { HeroMobileField } from "./HeroMobileField";
 import { cn } from "@/lib/cn";
 
 registerGsap();
@@ -15,7 +16,7 @@ registerGsap();
 const AnchorFieldCanvas = dynamic(() => import("@/three/AnchorFieldCanvas"), { ssr: false });
 
 /** Per-beat width axis: create = neutral, strategize = condensed (order), elevate = expanded. */
-const BEAT_WIDTH = [100, 86, 122] as const;
+const BEAT_WIDTH = [100, 86, 114] as const;
 
 /**
  * HERO — "Anchor → Path → Form".
@@ -53,14 +54,23 @@ export function Hero() {
         return;
       }
       const [b1, b2] = HERO_BEATS.headline;
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => {
-          fieldState.current.progress = self.progress;
-          setBeat(self.progress < b1 ? 0 : self.progress < b2 ? 1 : 2);
-        },
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          onUpdate: (self) => {
+            fieldState.current.progress = self.progress;
+            setBeat(self.progress < b1 ? 0 : self.progress < b2 ? 1 : 2);
+          },
+        });
+      });
+      // Phones: the hero is not pinned (no scroll distance to spend), so the headline selects
+      // each line in turn on a timer, in step with the paths of the mobile field.
+      mm.add("(max-width: 767px)", () => {
+        const id = window.setInterval(() => setBeat((b) => (b + 1) % 3), 1600);
+        return () => window.clearInterval(id);
       });
     },
     { scope: sectionRef, dependencies: [reduced], revertOnUpdate: true },
@@ -119,14 +129,17 @@ export function Hero() {
     <section
       ref={sectionRef}
       aria-labelledby="hero-heading"
-      className={cn("relative", reduced ? "h-svh" : "h-[170svh] md:h-[320svh]")}
+      // Phones: sized by its content (no pinned scroll, no empty bands). Tablet/desktop: pinned stage.
+      className={cn("relative", reduced ? "md:h-svh" : "md:h-[250svh]")}
     >
-      <div className="sticky top-0 h-svh overflow-hidden">
+      <div className="relative overflow-hidden md:sticky md:top-0 md:h-svh">
         {/* Artboard dot grid (echoes the dotted patches in the company deck). */}
         <div
           aria-hidden
           className="absolute inset-0 opacity-60 [background-image:radial-gradient(var(--color-ink-700)_1px,transparent_1.2px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_at_60%_40%,black,transparent_75%)]"
         />
+        {/* Phones: pen paths and anchors spread evenly over the whole stage (CSS, no WebGL). */}
+        <HeroMobileField />
         {/* The field recedes behind the copy (top / left) and stays vivid where the form lands. */}
         {/* Tablet/desktop: the field fills the stage, receding behind the copy. On phones it gets
             its own box below the copy instead (see further down), so it can never sit on text. */}
@@ -137,14 +150,14 @@ export function Hero() {
           </div>
         )}
 
-        {/* Legibility veil behind the copy: from the top-left on desktop, from the top on mobile. */}
+        {/* Legibility veil behind the copy (tablet/desktop, over the WebGL field): from the top-left on desktop, from the top on tablets. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,var(--color-ink-950)_0%,rgb(11_11_11/0.85)_45%,transparent_70%)] lg:bg-[linear-gradient(100deg,var(--color-ink-950)_0%,rgb(11_11_11/0.75)_42%,transparent_65%)]"
+          className="pointer-events-none absolute inset-0 max-md:hidden md:bg-[linear-gradient(180deg,var(--color-ink-950)_0%,rgb(11_11_11/0.85)_45%,transparent_70%)] lg:bg-[linear-gradient(100deg,var(--color-ink-950)_0%,rgb(11_11_11/0.75)_42%,transparent_65%)]"
         />
 
         {/* Order: meta → headline → tagline + actions → beat bar. The form fills the space low-right. */}
-        <div className="container-page relative flex h-full flex-col justify-center-safe pb-10 pt-[var(--header-h)] short-phone:pb-4 md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4">
+        <div className="container-page relative flex h-full flex-col pb-12 pt-[calc(var(--header-h)+1.75rem)] md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4">
           <ul aria-label="About GFX-T" className="hero-fade label flex flex-wrap items-center gap-2">
             <li className="flex items-center gap-2 bg-signal px-3 py-1.5 font-medium text-ink-950">
               <span aria-hidden className="size-1.5 bg-ink-950" />
