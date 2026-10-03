@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 import { gsap, motion, ScrollTrigger, useGSAP, registerGsap } from "@/lib/motion";
 import { hasWebGL, useFinePointer, useIsMobile, useReducedMotion } from "@/lib/device";
 import { ActionLink } from "@/components/buttons/ActionLink";
-import { HERO_BEATS, type AnchorFieldState } from "@/three/scenes/AnchorFieldScene";
+import { HERO_BEATS, type AnchorFieldState, type CopyBox } from "@/three/scenes/AnchorFieldScene";
 import { HeroFallback } from "./HeroFallback";
 import { HeroMobileField } from "./HeroMobileField";
 import { cn } from "@/lib/cn";
@@ -25,6 +25,7 @@ const BEAT_WIDTH = [100, 86, 114] as const;
  */
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const fieldState = useRef<AnchorFieldState>({
     progress: 0,
@@ -106,6 +107,35 @@ export function Hero() {
     { dependencies: [selected, reduced] },
   );
 
+  // Tell the field where the copy is, so the nib can fill the free space around it. Headline lines
+  // are measured at their widest beat (the width axis animates); everything relative to the stage.
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (mobile || !stage) return;
+    const measure = () => {
+      const st = stage.getBoundingClientRect();
+      const boxes: CopyBox[] = [];
+      const add = (r: DOMRect, x1 = r.right) => boxes.push({ x0: r.left - st.left, x1: x1 - st.left, y0: r.top - st.top, y1: r.bottom - st.top });
+      lineRefs.current.forEach((line, i) => {
+        if (!line) return;
+        const r = line.getBoundingClientRect();
+        const current = Number(gsap.getProperty(line, "--wdth")) || 100;
+        add(r, r.left + (r.width * Math.max(100, BEAT_WIDTH[i])) / current);
+      });
+      stage.querySelectorAll("[data-hero-copy]").forEach((el) => add(el.getBoundingClientRect()));
+      fieldState.current.copyBoxes = boxes;
+    };
+    // After the intro (lines rise from their masks) and once web fonts have settled the widths.
+    const t = window.setTimeout(measure, 1800);
+    document.fonts?.ready.then(measure);
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(stage);
+    return () => {
+      window.clearTimeout(t);
+      ro.disconnect();
+    };
+  }, [mobile]);
+
   // Pointer → NDC for the pen-tool interaction.
   useEffect(() => {
     if (!finePointer || reduced) return;
@@ -132,7 +162,7 @@ export function Hero() {
       // Phones: sized by its content (no pinned scroll, no empty bands). Tablet/desktop: pinned stage.
       className={cn("relative", reduced ? "md:h-svh" : "md:h-[250svh]")}
     >
-      <div className="relative overflow-hidden md:sticky md:top-0 md:h-svh">
+      <div ref={stageRef} className="relative overflow-hidden md:sticky md:top-0 md:h-svh">
         {/* Artboard dot grid (echoes the dotted patches in the company deck). */}
         <div
           aria-hidden
@@ -159,12 +189,12 @@ export function Hero() {
         {/* Order: meta → headline → tagline + actions → beat bar. The form fills the space low-right. */}
         <div className="container-page relative flex h-full flex-col pb-12 pt-[calc(var(--header-h)+1.75rem)] md:justify-start md:pb-8 md:pt-[calc(var(--header-h)+clamp(1rem,4svh,3rem))] short:pb-4">
           <ul aria-label="About GFX-T" className="hero-fade label flex flex-wrap items-center gap-2">
-            <li className="flex items-center gap-2 bg-signal px-3 py-1.5 font-medium text-ink-950">
+            <li data-hero-copy className="flex items-center gap-2 bg-signal px-3 py-1.5 font-medium text-ink-950">
               <span aria-hidden className="size-1.5 bg-ink-950" />
               {site.descriptor}
             </li>
-            <li className="hidden border border-paper/20 px-3 py-1.5 text-paper/85 backdrop-blur-sm min-[400px]:block">Lahore, Pakistan</li>
-            <li className="border border-paper/20 px-3 py-1.5 text-paper/85 backdrop-blur-sm">
+            <li data-hero-copy className="hidden border border-paper/20 px-3 py-1.5 text-paper/85 backdrop-blur-sm min-[400px]:block">Lahore, Pakistan</li>
+            <li data-hero-copy className="border border-paper/20 px-3 py-1.5 text-paper/85 backdrop-blur-sm">
               Est. <span className="text-signal">{site.founded}</span>
             </li>
           </ul>
@@ -202,10 +232,10 @@ export function Hero() {
 
           {/* Tagline first, actions always underneath it (every screen size). */}
           <div className="mt-6 flex flex-col gap-5 md:mt-9 md:gap-6 short:mt-5 short:gap-4 short-phone:mt-4 short-phone:gap-3">
-            <p className="hero-fade max-w-md text-base text-paper/85 [--hero-fade-delay:0.76s] md:text-lead short:max-w-xl short:text-base short-phone:max-w-xl">
+            <p data-hero-copy className="hero-fade w-fit max-w-md text-base text-paper/85 [--hero-fade-delay:0.76s] md:text-lead short:max-w-xl short:text-base short-phone:max-w-xl">
               {site.tagline}
             </p>
-            <div className="hero-fade flex flex-wrap gap-2 [--hero-fade-delay:0.82s] md:gap-3">
+            <div data-hero-copy className="hero-fade flex w-fit flex-wrap gap-2 [--hero-fade-delay:0.82s] md:gap-3">
               {/* Size and label switch in CSS (not JS) so the buttons don't jump when the page loads. */}
               <ActionLink href="/contact" variant="primary" size="sm-md">
                 Start a project

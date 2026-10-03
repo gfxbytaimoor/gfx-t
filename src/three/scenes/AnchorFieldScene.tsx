@@ -34,7 +34,61 @@ export type AnchorFieldState = {
   /** Pointer in normalised device coordinates. */
   pointer: { x: number; y: number };
   pointerActive: boolean;
+  /**
+   * Where the hero copy sits, in CSS px relative to the stage (top-left origin). Measured by the
+   * Hero; the nib is sized and placed to fill the free space around it.
+   */
+  copyBoxes?: CopyBox[];
 };
+
+export type CopyBox = { x0: number; x1: number; y0: number; y1: number };
+
+/**
+ * The formed nib's extent in its own units at the final pose (from the rendered mark), split
+ * into its three bands so its narrow left end can tuck under the headline's shorter lines.
+ * x grows right, y grows up.
+ */
+const NIB_PARTS = [
+  { x0: -1.5, x1: -0.75, y0: -0.62, y1: 0.77 }, // ferrules
+  { x0: -0.75, x1: 0.95, y0: -1.0, y1: 1.0 }, // body
+  { x0: 0.95, x1: 1.6, y0: -1.52, y1: 1.62 }, // handle bar + arcs
+] as const;
+const NIB_RIGHT = 1.6;
+const NIB_LEFT = 1.5;
+const NIB_TOP = 1.62;
+const NIB_BOTTOM = 1.52;
+const HALF_H = 3.47; // visible half-height at z=0 (camera z 11, fov 35)
+
+/**
+ * Largest nib that fits the landscape stage without touching the copy, centred in the space left
+ * over (world units). Returns null until the copy has been measured.
+ */
+function placeNib(width: number, height: number, boxes: CopyBox[] | undefined) {
+  if (!boxes?.length) return null;
+  const pxu = height / (HALF_H * 2);
+  const halfW = width / 2 / pxu;
+  const world = boxes.map((b) => ({
+    x1: (b.x1 - width / 2) / pxu,
+    top: (height / 2 - b.y0) / pxu,
+    bottom: (height / 2 - b.y1) / pxu,
+  }));
+  const headerU = 72 / pxu; // fixed header (4.5rem); the top arcs may pass a little behind it
+  const topLimit = HALF_H - headerU * 0.45;
+  const gap = 0.22; // clearance from the copy
+  for (let scale = 2.6; scale >= 0.6; scale -= 0.02) {
+    // Sit low (clear of the headline), with a little room under it.
+    const cy = -HALF_H + 0.2 + NIB_BOTTOM * scale;
+    if (cy + NIB_TOP * scale > topLimit) continue;
+    const hi = halfW - 0.15 - NIB_RIGHT * scale;
+    let lo = -halfW + 0.2 + NIB_LEFT * scale;
+    for (const b of world)
+      for (const part of NIB_PARTS)
+        if (cy + part.y0 * scale < b.top + 0.08 && cy + part.y1 * scale > b.bottom - 0.08)
+          lo = Math.max(lo, b.x1 + gap - part.x0 * scale);
+    if (lo <= hi) return { scale, x: (lo + hi) / 2, y: cy };
+  }
+  return null;
+}
 
 type Props = {
   state: React.RefObject<AnchorFieldState>;
@@ -116,7 +170,10 @@ export function AnchorFieldScene({ state, quality, still = false }: Props) {
     [buffers, materials],
   );
 
-  const scratch = useMemo(() => ({ euler: new Euler(), m4: new Matrix4() }), []);
+  const scratch = useMemo(
+    () => ({ euler: new Euler(), m4: new Matrix4(), fitFor: null as unknown, fitKey: "", fit: null as ReturnType<typeof placeNib> }),
+    [],
+  );
 
   useFrame((_, rawDelta) => {
     const s = state.current;
@@ -152,8 +209,22 @@ export function AnchorFieldScene({ state, quality, still = false }: Props) {
     // Copy top-left (landscape) / top (portrait), form in the free space right / below.
     // Landscape: large, filling the lower-right of the stage — its tall right side beside the
     // headline, its narrow left side (the ferrules) below the headline and right of the tagline.
-    u.uFormOffset.value.set(portrait ? 0 : halfW * 0.565, portrait ? -2.3 + m2 * 0.1 : -0.95 + m2 * 0.1, 0);
-    u.uFormScale.value = portrait ? Math.min(0.62, halfW * 0.28) : Math.min(1.6, halfW * 0.267);
+    // Landscape with the copy measured: as large as the free space allows, centred in it.
+    // Recomputed only when the stage size or the measured copy changes.
+    const fitKey = `${size.width}x${size.height}`;
+    if (scratch.fitFor !== s.copyBoxes || scratch.fitKey !== fitKey) {
+      scratch.fitFor = s.copyBoxes;
+      scratch.fitKey = fitKey;
+      scratch.fit = placeNib(size.width, size.height, s.copyBoxes);
+    }
+    const fit = portrait ? null : scratch.fit;
+    if (fit) {
+      u.uFormOffset.value.set(fit.x, fit.y, 0);
+      u.uFormScale.value = fit.scale;
+    } else {
+      u.uFormOffset.value.set(portrait ? 0 : halfW * 0.565, portrait ? -2.3 + m2 * 0.1 : -0.95 + m2 * 0.1, 0);
+      u.uFormScale.value = portrait ? Math.min(0.62, halfW * 0.28) : Math.min(1.6, halfW * 0.267);
+    }
     const px = s.pointerActive ? s.pointer.x : 0;
     const py = s.pointerActive ? s.pointer.y : 0;
     // Ends nearly face-on (the mark stays legible) with just enough yaw to reveal its depth layers.
