@@ -45,3 +45,6 @@ next-env.d.ts
 
 # responsive image variants, generated before dev/build (scripts/image-variants.mjs)
 /public/_img
+
+# wrangler (local `wrangler dev` state)
+.wrangler
