@@ -5,8 +5,14 @@ import { TransitionLink } from "@/components/transitions/TransitionLink";
 import { ActionLink } from "@/components/buttons/ActionLink";
 import { BackToTop, StudioTime } from "./FooterMeta";
 import { SocialLinks } from "@/components/ui/SocialLinks";
+import { SelectionBox } from "@/components/ui/SelectionBox";
 
 const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address.full)}`;
+
+const credits = [
+  { name: "Hira Baig", href: "https://portfolio-website-new-opal.vercel.app/" },
+  { name: "OBD", href: "https://omerbindawood.github.io/Portfolio-Website/" },
+];
 
 /** Label that rolls up to a signal-yellow copy on hover (same move as the header links). */
 function Roll({ children }: { children: React.ReactNode }) {
@@ -93,11 +99,33 @@ export function Footer() {
       </div>
 
       <div className="relative border-t border-ink-800 bg-ink-950">
-        <div className="container-page label flex flex-col gap-3 py-5 text-ink-400 md:flex-row md:items-center md:justify-between">
+        <div className="container-page label flex flex-col gap-3 py-5 text-ink-400 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8">
           <p>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
-          <p className="flex items-center gap-6">
+          {/* Credits: hovering a name selects it, like an object on the artboard. */}
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span>Designed &amp; Deployed by</span>
+            {credits.map((c, i) => (
+              <span key={c.name} className="flex items-center gap-3">
+                {i > 0 && <span aria-hidden className="size-1 rotate-45 bg-ink-500" />}
+                <a
+                  href={c.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative inline-flex items-center gap-1 px-1 text-paper/85 outline-none transition-colors duration-300 hover:text-signal focus-visible:text-signal"
+                >
+                  {c.name}
+                  <span aria-hidden className="inline-block -translate-x-0.5 opacity-50 transition-[transform,opacity] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100">
+                    ↗
+                  </span>
+                  <span className="sr-only"> (opens in a new tab)</span>
+                  <SelectionBox visible={false} className="-inset-x-1 -inset-y-1.5 group-hover:opacity-100 group-focus-visible:opacity-100" />
+                </a>
+              </span>
+            ))}
+          </p>
+          <p className="flex items-center gap-6 md:justify-self-end">
             <span>Since {site.founded}</span>
             <BackToTop />
           </p>
