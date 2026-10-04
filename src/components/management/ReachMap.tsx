@@ -107,8 +107,9 @@ export function ReachMap({ places, tone, groupLabel, className }: { places: stri
         );
       })}
       <rect x={o.x - 5} y={o.y - 5} width={10} height={10} className={ink ? "fill-ink-950" : "fill-signal"} />
-      {/* Pakistan sits furthest east, so its label runs leftwards from the point: never out of frame. */}
-      <text x={o.x + 5} y={o.y + 32} textAnchor="end" className={cn(label, ink ? "fill-ink-950" : "fill-signal")}>
+      {/* Centred under the point: clear of the Gulf points just west of it, and inside the frame
+          (Pakistan sits furthest east, at least MARGIN_X from the edge). */}
+      <text x={o.x} y={o.y + 32} textAnchor="middle" className={cn(label, ink ? "fill-ink-950" : "fill-signal")}>
         {ORIGIN}
       </text>
       {groupLabel && (

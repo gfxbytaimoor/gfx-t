@@ -37,8 +37,7 @@ export const leaders: Leader[] = [
     role: "Creative Head & COO",
     bio: "With 7 years of experience in local and multinational creative agencies, Syed Taimoor Hassan Naushahi serves as the COO and Creative Head of GFX-T. His leadership and expertise drive innovation, delivering impactful branding, design, and digital marketing solutions. He has also worked with clients across Qatar, UAE, UK, and Jordan bringing a diverse international perspective to every creative project.",
     experience: { value: "7", unit: "years in creative agencies" },
-    reach: ["Qatar", "UAE", "UK", "Jordan"],
-    reachLabel: "Other countries",
+    reach: ["UAE", "Qatar", "Jordan", "UK"],
     portrait: {
       src: "/team/syed-taimoor-hassan-naushahi.jpg",
       width: 2160,

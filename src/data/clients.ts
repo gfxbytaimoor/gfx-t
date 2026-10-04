@@ -47,7 +47,6 @@ const LOGOS: Record<string, [number, number]> = {
   "lala": [416, 420],
   "munib-nawaz": [374, 244],
   "baskin-robbins": [680, 170],
-  "boxpark-pica": [369, 127],
   "gauchos": [357, 91],
   "meet-me-in-paris": [680, 171],
   "rickys": [460, 246],

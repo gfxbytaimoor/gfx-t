@@ -7,9 +7,8 @@
  *  - `detail` says what the piece is, as read from the artwork;
  *  - brand identities are titled with the name written in the mark itself.
  *
- * Everything is the client's original export except "Fired Up", "Lahore Hot Pot", "Zamurd
- * Collection" and the SJ Closet / GBT / DNF / Perplexion marks, which are still
- * low-resolution crops from the company profile (PDF) until originals are supplied.
+ * Everything is the client's original export. Low-resolution crops from the company profile
+ * (PDF) were removed; add them back only from original files.
  *
  * To add or upgrade work: put originals in `assets-src/portfolio/<slug>/`, run `npm run images`,
  * and add/update the entry below (width/height as printed by the script).
@@ -72,19 +71,16 @@ const SOCIAL: Piece[] = [
   ["social-23", "lala2", 1080, 1080, "Lala", "Vintage Swiss voile pre-booking", "lala"],
   ["social-24", "rickeys3", 1080, 1080, "Ricky's", "New location opening", "rickys"],
   ["social-12", "javandi2", 500, 500, "Javandi", "30% off sale", "javandi"],
-  ["social-22", "baskin-robins6", 1600, 1200, "Baskin Robbins", "Merchandise T-shirt design", "baskin-robbins"],
+  ["social-19", "baskins-robins3", 900, 1600, "Baskin Robbins", "Marketplace 204 store opening", "baskin-robbins"],
   ["social-04", "darkside-car-care", 2000, 2000, "Car Vogue", "DarkSide tyre cleaner promotion"],
   ["social-26", "javandi-luxury-event2", 2400, 2400, "Javandi", "Luxury Pret launch event", "javandi"],
-  ["social-19", "baskins-robins3", 900, 1600, "Baskin Robbins", "Marketplace 204 store opening", "baskin-robbins"],
-  ["social-02", "pizza-post", 298, 298, "Fired Up", "Pizza promotion"],
-  ["social-14", "high-life-big-buy", 1080, 1080, "High Life", "Big Buy sale"],
-  ["social-06", "choice-of-meat", 300, 300, "Lahore Hot Pot", "Menu promotion"],
-  ["social-01", "javandi-luxury-event", 2400, 2400, "Javandi", "Luxury Pret launch event", "javandi"],
-  ["social-13", "pre-booking-collection", 295, 292, "Zamurd Collection", "Pre-booking campaign"],
-  ["social-27", "artisan-coffee", 1080, 1080, "Artisan Coffee Roaster", "Coffee promotion"],
   ["social-03", "high-life-massage-chair", 2400, 2400, "High Life", "iRest massage chair promotion"],
-  ["social-18", "baskin-robins2", 1600, 1308, "Baskin Robbins", "Lake City standee designs", "baskin-robbins"],
+  ["social-14", "high-life-big-buy", 1080, 1080, "High Life", "Big Buy sale"],
+  ["social-01", "javandi-luxury-event", 2400, 2400, "Javandi", "Luxury Pret launch event", "javandi"],
+  ["social-27", "artisan-coffee", 1080, 1080, "Artisan Coffee Roaster", "Coffee promotion"],
   ["social-17", "baskin-robins", 2400, 1599, "Baskin Robbins", "31% off roll-up standees", "baskin-robbins"],
+  ["social-22", "baskin-robins6", 1600, 1200, "Baskin Robbins", "Merchandise T-shirt design", "baskin-robbins"],
+  ["social-18", "baskin-robins2", 1600, 1308, "Baskin Robbins", "Lake City standee designs", "baskin-robbins"],
   ["social-20", "baskin-robins4", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
   ["social-21", "baskin-robins5", 1672, 941, "Baskin Robbins", "App launch billboard", "baskin-robbins"],
 ];
@@ -112,10 +108,6 @@ const BRANDS: [string, string, number, number, string, boolean][] = [
   ["brand-moxie", "moxie", 1080, 1080, "Moxie", true],
   ["brand-russos", "russos", 1080, 1080, "Russo's", true],
   ["brand-the-crown", "the-crown", 1080, 1080, "The Crown", true],
-  ["brand-sj-closet", "sj-closet", 330, 328, "SJ Closet", false],
-  ["brand-gbt-graphics", "gbt-graphics", 372, 352, "GBT Graphics", false],
-  ["brand-dnf-industries", "dnf-industries", 372, 298, "DNF Industries", false],
-  ["brand-perplexion", "perplexion", 348, 345, "Perplexion", false],
 ];
 
 export const portfolio: PortfolioProject[] = [
