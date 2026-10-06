@@ -12,8 +12,10 @@ import { ClientMark } from "@/components/clients/ClientMark";
  * under reduced motion.
  */
 export function ClientsTeaser() {
-  const half = Math.ceil(clients.length / 2);
-  const rows = [clients.slice(0, half), clients.slice(half)];
+  // Boxpark Pica has no usable logo yet, so it stays off the running line (it is still on /clients).
+  const drifting = clients.filter((c) => c.slug !== "boxpark-pica");
+  const half = Math.ceil(drifting.length / 2);
+  const rows = [drifting.slice(0, half), drifting.slice(half)];
 
   return (
     <section aria-labelledby="clients-teaser-heading" className="overflow-hidden bg-paper py-[var(--spacing-section)] text-ink-950">
